@@ -1,0 +1,3 @@
+class ImageRepository(object):
+
+    def 
