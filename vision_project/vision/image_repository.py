@@ -34,11 +34,28 @@ class LocalDirectoryImageRepository(ImageRepository):
         return self.files
 
 
+class LiveCaptureNoCacheEmptying:
+
+    def __init__(self, camera_filename: str):
+        self.capture = cv2.VideoCapture(camera_filename)
+        self.capture.set(cv2.CAP_PROP_FRAME_HEIGHT, 800)
+        self.capture.set(cv2.CAP_PROP_FRAME_WIDTH, 1280)
+        self.get_next_image()
+        load_camera_settings(camera_filename)
+
+    def get_next_image(self) -> "Image":
+        is_frame_returned, frame = self.capture.read()
+        return Image(frame)
+
+    def release_capture_device(self):
+        self.capture.release()
+        cv2.destroyAllWindows()
+
 class LiveCapture:
 
     def __init__(self, camera_filename: str):
         self.capture = cv2.VideoCapture(camera_filename)
-        self.capture.set(cv2.CAP_PROP_FRAME_HEIGHT, 720)
+        self.capture.set(cv2.CAP_PROP_FRAME_HEIGHT, 800)
         self.capture.set(cv2.CAP_PROP_FRAME_WIDTH, 1280)
         self.get_next_image()
         load_camera_settings(camera_filename)

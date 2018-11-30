@@ -25,6 +25,11 @@ class Image:
         cv2.waitKey(timeout)
         cv2.destroyAllWindows()
 
+    def show_do_not_close(self, timeout=25, name='frame'):
+        cv2.namedWindow(name)
+        cv2.imshow(name, self.frame)
+        cv2.waitKey(timeout)
+
     def get_in_range_mask(self, lower: list, higer: list) -> Mask:
         matrix = cv2.inRange(self.frame, np.array(lower, dtype='uint8'), np.array(higer, dtype='uint8'))
         return Mask(matrix)
