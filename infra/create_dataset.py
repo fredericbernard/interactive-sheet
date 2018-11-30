@@ -21,7 +21,7 @@ args = parser.parse_args()
 capture = cv2.VideoCapture(args.camera)
 
 capture.set(cv2.CAP_PROP_FRAME_HEIGHT, 800)
-capture.set(cv2.CAP_PROP_FRAME_WIDTH, 600)
+capture.set(cv2.CAP_PROP_FRAME_WIDTH, 1280)
 
 
 def get_latest_image(capture: cv2.VideoCapture):

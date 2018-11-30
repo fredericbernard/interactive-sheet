@@ -2,7 +2,7 @@
 APP{"guvcview 2.0.5"}
 # control data
 #Brightness
-ID{0x00980900};CHK{0:255:1:128}=VAL{68}
+ID{0x00980900};CHK{0:255:1:128}=VAL{117}
 #Contrast
 ID{0x00980901};CHK{0:255:1:32}=VAL{38}
 #Saturation
