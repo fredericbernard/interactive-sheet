@@ -4,6 +4,7 @@ jivago==0.3.4
 MarkupSafe==1.1.0
 numpy==1.15.4
 opencv-python==3.4.3.18
+opencv-contrib-python=3.4.3.19
 python-dateutil==2.7.5
 PyYAML==3.13
 six==1.11.0
