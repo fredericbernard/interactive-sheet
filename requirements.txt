@@ -1,10 +1,10 @@
 croniter==0.3.26
 Jinja2==2.10
-jivago==0.3.4
+jivago==0.4.0
 MarkupSafe==1.1.0
 numpy==1.15.4
 opencv-python==3.4.3.18
-opencv-contrib-python=3.4.3.19
+opencv-contrib-python==3.4.3.18
 python-dateutil==2.7.5
 PyYAML==3.13
 six==1.11.0
