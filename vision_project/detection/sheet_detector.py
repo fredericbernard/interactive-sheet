@@ -5,7 +5,6 @@ import cv2
 
 from vision_project.detection.sheet import Sheet
 from vision_project.vision import colourspace
-from vision_project.vision.drawing import draw_crosshair
 from vision_project.vision.image import Image
 from vision_project.vision.util import CameraCoordinate
 

@@ -39,14 +39,15 @@ class SheetDetectorTest(unittest.TestCase):
                 Stream(sheets).forEach(lambda sheet: draw_crosshair(image, sheet.oposite_corner, [255, 0, 0]))
                 image.show_on_window()
 
-        self.assertTrue(correct / (incorrect + correct) > 0.80)
+        correct_ratio = correct / (incorrect + correct)
+        print(f"correct_ratio : {correct_ratio}")
+        self.assertTrue(correct_ratio > 0.85)
 
 
 def assertASheetMatchesLabelledCorner(sheets: List[Sheet], label: dict):
     for sheet in sheets:
         expected = PixelCoordinate(*label["position"])
 
-        print("difference : ", (expected - sheet.origin).euclidean_length())
         if expected.isclose(sheet.origin, delta=5):
             return True
     return False
