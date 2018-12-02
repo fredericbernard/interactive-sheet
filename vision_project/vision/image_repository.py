@@ -72,4 +72,7 @@ class LiveCapture:
 
 
 def load_camera_settings(camera_file: str):
-    subprocess.call(["uvcdynctrl", "-L", "../infra/cameraMondeSettings.txt", "-d", camera_file])
+    try:
+        subprocess.call(["uvcdynctrl", "-L", "../infra/cameraMondeSettings.txt", "-d", camera_file])
+    except:
+        pass
