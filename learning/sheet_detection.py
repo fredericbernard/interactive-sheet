@@ -18,6 +18,7 @@ image_repository = LocalDirectoryImageRepository(
 
 while True:
     image = image_repository.get_next_image()
+    image = Image(cv2.imread(os.path.join(os.path.dirname(infra.__file__), "training_datasets/720p-touching/image_62.jpg")))
     image.show_do_not_close(2500, name="image")
 
     hsv_image = colourspace.bgr_to_hsv(image)
@@ -38,6 +39,7 @@ while True:
 
             min_rect = cv2.minAreaRect(c)
             box = cv2.boxPoints(min_rect)
+            print(min_rect)
             # convert all coordinates floating point values to int
             box = np.int0(box)
 

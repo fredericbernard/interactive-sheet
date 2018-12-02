@@ -29,8 +29,20 @@ class PixelCoordinate:
     def __hash__(self):
         return 31 * self.x + 59 * self.y
 
+    def __sub__(self, other):
+        return PixelCoordinate(self.x - other.x, self.y - other.y)
+
     def isclose(self, other: "PixelCoordinate", delta=10):
         return (self.x - other.x)**2 + (self.y - other.y)**2 <= delta**2
+
+    def euclidean_length(self):
+        return math.sqrt(self.x ** 2 + self.y ** 2)
+
+class CameraCoordinate(PixelCoordinate):
+    pass
+
+class ProjectorCoordinate(PixelCoordinate):
+    pass
 
 class WorldCoordinate(object):
 
