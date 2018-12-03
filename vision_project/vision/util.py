@@ -33,16 +33,19 @@ class PixelCoordinate:
         return PixelCoordinate(self.x - other.x, self.y - other.y)
 
     def isclose(self, other: "PixelCoordinate", delta=10):
-        return (self.x - other.x)**2 + (self.y - other.y)**2 <= delta**2
+        return (self.x - other.x) ** 2 + (self.y - other.y) ** 2 <= delta ** 2
 
     def euclidean_length(self):
         return math.sqrt(self.x ** 2 + self.y ** 2)
 
+
 class CameraCoordinate(PixelCoordinate):
     pass
 
+
 class ProjectorCoordinate(PixelCoordinate):
     pass
+
 
 class WorldCoordinate(object):
 
@@ -66,6 +69,10 @@ class WorldCoordinate(object):
 
     def is_close(self, other: "WorldCoordinate", delta=0.02) -> bool:
         return math.isclose(self.x, other.x, abs_tol=delta) and math.isclose(self.y, other.y, abs_tol=delta)
+
+
+class RelativeWorldCoordinate(WorldCoordinate):
+    pass
 
 
 class WorldDelta(object):

@@ -1,27 +1,21 @@
-import random
-
 from jivago.lang.annotations import Override, Inject
 from jivago.lang.runnable import Runnable
 from jivago.scheduling.annotations import Scheduled, Duration
 
-from vision_project.projection.projector_window import ProjectorWindow
-
-
+from vision_project.drawing.drawing import Drawing
 # TODO remove when happy with behaviour
+from vision_project.vision.util import RelativeWorldCoordinate
+
 
 @Scheduled(every=Duration.SECOND)
 class RandomScreenUpdater(Runnable):
 
     @Inject
-    def __init__(self, projector_window: ProjectorWindow):
-        self.projector_window = projector_window
+    def __init__(self, drawing: Drawing):
+        self.drawing = drawing
 
     @Override
     def run(self):
-        colours = ['black', 'blue', 'pink', 'red', 'green', 'gray', 'magenta', 'purple', 'teal']
-        random.shuffle(colours)
-        colour = colours[0]
-        self.projector_window.canvas.create_line(random.randint(0, 600), random.randint(0, 600), random.randint(0, 600),
-                                                 random.randint(0, 600), fill=colour, width=random.randint(1, 5))
-        if random.randint(0, 25) > 22:
-            self.projector_window.canvas.delete('all')
+        self.drawing.clear()
+        self.drawing.draw_line(RelativeWorldCoordinate(0, 0), RelativeWorldCoordinate(20, 20))
+        self.drawing.draw_line(RelativeWorldCoordinate(20, 0), RelativeWorldCoordinate(0, 20))
