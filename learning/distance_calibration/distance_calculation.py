@@ -12,7 +12,7 @@ tvec = loaded_dict.get('tvec')
 tvec = np.asarray(tvec)
 
 
-uvPoint = np.array([389, 232, np.ones(shape=1)]).reshape(3, 1)
+uvPoint = np.array([351, 324, np.ones(shape=1)]).reshape(3, 1)
 t = iR.dot(iC).dot(uvPoint)
 t2 = iR.dot(tvec)
 s = (0 + t2[2]) / t[2]
