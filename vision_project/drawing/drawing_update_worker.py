@@ -37,8 +37,9 @@ class DrawingUpdateWorker(Runnable):
                     lines = self.drawing.get_lines(sheet.origin, self.coordinate_translator)
                     Stream(lines).forEach(lambda start, end: self.projector_window.draw_line(start, end))
             except Exception as e:
-                time.sleep(1)
                 self.LOGGER.warning(f"Unknown error while redrawing. {e}")
+            finally:
+                time.sleep(0.25)
 
     def cleanup(self):
         self.should_exit = True
