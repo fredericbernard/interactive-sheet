@@ -26,7 +26,7 @@ uvPoint = np.array([390, 498, np.ones(shape=1)]).reshape(3, 1)
 iR = inv(rotation_matrix)
 iC = inv(cameraMatrix)
 
-data = {'inverse_rotation_matrix': np.asarray(iR).tolist(), 'inverse_camera_matrix': np.asarray(iC).tolist(), 'tvec': np.asarray(tvec).tolist()}
+data = {'inverse_rotation_matrix': np.asarray(iR).tolist(), 'inverse_camera_matrix': np.asarray(iC).tolist(), 'tvec': np.asarray(tvec).tolist(), 'rvec': np.asarray(rvec).tolist()}
 
 with open('distance_calibration.yaml', 'w') as f:
     yaml.dump(data, f)
