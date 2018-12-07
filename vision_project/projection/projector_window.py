@@ -17,6 +17,10 @@ class ProjectorWindow(object):
 
     def main(self):
         self.master = Tk()
-        self.canvas = Canvas(self.master, width=800, height=600, background='white')
+        self.canvas = Canvas(self.master, width=1024, height=768, background='white')
         self.canvas.pack()
         mainloop()
+
+
+if __name__ == '__main__':
+    ProjectorWindow().main()

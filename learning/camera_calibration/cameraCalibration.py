@@ -6,6 +6,8 @@ import yaml
 
 from numpy.linalg import inv
 
+import infra
+
 criteria = (cv2.TERM_CRITERIA_EPS + cv2.TERM_CRITERIA_MAX_ITER, 30, 0.001)
 
 objp = np.zeros((6*9,3), np.float32)
@@ -15,7 +17,7 @@ objp = 23 * objp
 objpoints = []
 imgpoints = []
 
-images = glob.glob('./calibration_images/*.jpg')
+images = glob.glob(os.path.join(os.path.dirname(infra.__file__), "training_datasets/calibration-éclairée2/*.jpg"))
 
 for filename in images:
     image = cv2.imread(filename)
@@ -39,7 +41,7 @@ cv2.destroyAllWindows()
 
 ret, mtx, dist, rvecs, tvecs = cv2.calibrateCamera(objpoints, imgpoints, image_in_gray.shape[::-1], None, None)
 
-img = cv2.imread('./calibration_images/image_1.jpg')
+img = cv2.imread(os.path.join(os.path.dirname(infra.__file__), "training_datasets/720p-touching/image_1.jpg"))
 h, w = img.shape[:2]
 newcameramtx, roi = cv2.getOptimalNewCameraMatrix(mtx, dist, (w,h), 1, (w,h))
 
