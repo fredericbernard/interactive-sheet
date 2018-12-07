@@ -2,6 +2,7 @@ from math import cos, sin, radians
 from typing import List
 
 import cv2
+from jivago.lang.registry import Component
 
 from vision_project.detection.sheet import Sheet
 from vision_project.vision import colourspace
@@ -9,6 +10,7 @@ from vision_project.vision.image import Image
 from vision_project.vision.util import CameraCoordinate
 
 
+@Component
 class SheetDetector(object):
 
     def find_sheets(self, image: Image) -> List[Sheet]:
@@ -26,8 +28,10 @@ class SheetDetector(object):
                 center_xy, width_height, angle = cv2.minAreaRect(c)
 
                 corner = CameraCoordinate(
-                    center_xy[0] - (width_height[0] * cos(radians(angle)) - width_height[1] * sin(radians(angle + 180))) / 2,
-                    center_xy[1] + (width_height[0] * sin(radians(angle + 180)) - width_height[1] * cos(radians(angle + 180))) / 2
+                    center_xy[0] - (width_height[0] * cos(radians(angle)) - width_height[1] * sin(
+                        radians(angle + 180))) / 2,
+                    center_xy[1] + (width_height[0] * sin(radians(angle + 180)) - width_height[1] * cos(
+                        radians(angle + 180))) / 2
                 )
 
                 other_corner = corner + CameraCoordinate(

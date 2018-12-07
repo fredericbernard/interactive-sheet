@@ -1,8 +1,11 @@
 import subprocess
+import threading
 from os import listdir, path
 from os.path import isfile, join
 
 import cv2
+from jivago.lang.annotations import Override
+from jivago.lang.stream import Stream
 
 from vision_project.vision.image import Image
 from vision_project.vision.util import PixelCoordinate
@@ -35,7 +38,34 @@ class LocalDirectoryImageRepository(ImageRepository):
         return self.files
 
 
-class LiveCaptureNoCacheEmptying:
+class SimpleImageRepository(ImageRepository):
+
+    def __init__(self):
+        self.current_image = None
+        self.lock = threading.Lock()
+        self.observers = []
+
+    def set_image(self, image: Image):
+        with self.lock:
+            self.current_image = image
+        Stream(self.observers).forEach(lambda x: x.notify())
+
+    def register(self, observer: "ImageRepositoryObserver"):
+        self.observers.append(observer)
+
+    @Override
+    def get_next_image(self) -> Image:
+        with self.lock:
+            return self.current_image
+
+
+class ImageRepositoryObserver(object):
+
+    def notify(self):
+        raise NotImplementedError
+
+
+class LiveCaptureNoCacheEmptying(ImageRepository):
 
     def __init__(self, camera_filename: str):
         self.capture = cv2.VideoCapture(camera_filename)
@@ -52,7 +82,8 @@ class LiveCaptureNoCacheEmptying:
         self.capture.release()
         cv2.destroyAllWindows()
 
-class LiveCapture:
+
+class LiveCapture(ImageRepository):
 
     def __init__(self, camera_filename: str):
         self.capture = cv2.VideoCapture(camera_filename)
@@ -79,11 +110,11 @@ def load_camera_settings(camera_file: str):
         pass
 
 
-
 # for testing
 import json
 
-class LabelledImageRepository:
+
+class LabelledImageRepository(ImageRepository):
     def __init__(self, training_data_path: str, labelled_data_path: str):
         self.image_repository = LocalDirectoryImageRepository(training_data_path)
         f = open(labelled_data_path)
