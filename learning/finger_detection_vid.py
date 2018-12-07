@@ -5,7 +5,7 @@ import numpy as np
 import argparse
 import cv2
 
-def centroid(contour):
+def get_centroid(contour):
     moment = cv2.moments(contour)
     cx = int(moment['m10'] / moment['m00'])
     cy = int(moment['m01'] / moment['m00'])
@@ -71,15 +71,21 @@ while cap.isOpened():
     mask = cv2.inRange(hsv, lower_color, upper_color)
     result = cv2.bitwise_and(frame, frame, mask=mask)
 
-    ret, threshold = cv2.threshold(mask, 40, 255, 0)
+    _, threshold = cv2.threshold(mask, 40, 255, 0)
 
-    _, contours, hierarchy = cv2.findContours(threshold, 1, 2)
+    _, contours, _ = cv2.findContours(threshold, 1, 2)
 
     max_contour = max_area(contours)
 
     #cv2.drawContours(frame, max_contour, -1, 255, 3)
-    cnt_centroid = centroid(max_contour)
+    cnt_centroid = get_centroid(max_contour)
     #cv2.circle(frame, cnt_centroid, 5, [255, 0, 255], -1)
+
+    rows, cols = frame.shape[:2]
+    [vx, vy, x, y] = cv2.fitLine(max_contour, cv2.DIST_L2, 0, 0.01, 0.01)
+    lefty = int((-x * vy / vx) + y)
+    righty = int(((cols - x) * vy / vx) + y)
+    img = cv2.line(frame, (cols - 1, righty), (0, lefty), (0, 255, 0), 2)
 
     if max_contour is not None:
         hull = cv2.convexHull(max_contour, returnPoints=False)
@@ -94,7 +100,7 @@ while cap.isOpened():
 
         draw_circles(frame, traverse_point)
 
-    cv2.imshow("Live Feed", mask)
+    cv2.imshow("Live Feed", frame)
     if cv2.waitKey(1) & 0xFF == ord('q'):
         break
 
