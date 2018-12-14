@@ -30,8 +30,8 @@ class ArucoCalibrator(object):
         photo = ImageTk.PhotoImage(image=PIL.Image.fromarray(image))
 
         self.projector_window.canvas.create_image(500, 400, image=photo)
-        return np.array([[500 + 300, 400 + 300, 0], [500 + 300, 400 - 300, 0], [500 - 300, 400 - 300, 0],
-                         [500 - 300, 400 + 300, 0]], dtype=np.float32)
+        return np.array([[500 + 300, 400 + 300], [500 + 300, 400 - 300], [500 - 300, 400 - 300],
+                         [500 - 300, 400 + 300]], dtype=np.float32)
 
     def detect_aruco(self):
         image = self.image_repository.get_next_image()
@@ -62,7 +62,7 @@ def calibrate(corners_on_image, corners_on_projector):
     cameraMatrix = np.matrix(camera_matrix)
     iC = inv(cameraMatrix)
 
-    ret, rvec, tvec = cv2.solvePnP(corners_on_image, corners_on_projector, camera_matrix, distance_coefficients)
+    ret, rvec, tvec = cv2.solvePnP(corners_on_projector, corners_on_image, camera_matrix, distance_coefficients)
     rotation_vector = cv2.Rodrigues(rvec)[0]
     rotation_matrix = np.matrix(rotation_vector)
     iR = inv(rotation_matrix)
@@ -79,10 +79,13 @@ if __name__ == '__main__':
     corners_camera = calibrator.show_aruco()
 
     corners_projector = []
+    sleep(5)
     while not corners_projector:
-        sleep(1)
         capture.get_next_image().show_do_not_close()
         corners_projector = calibrator.detect_aruco()
         print(corners_projector)
 
-    calibrate(corners_camera, corners_projector[0])
+    array = []
+    for i in corners_projector[0][0]:
+        array.append([i[0], i[1], 0])
+    calibrate(corners_camera, np.asarray(array, dtype=np.float32))
