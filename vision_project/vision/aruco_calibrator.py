@@ -90,4 +90,3 @@ if __name__ == '__main__':
         array.append([i[0], i[1], 0])
     calibrate(corners_camera, np.asarray(array, dtype=np.float32))
 
-    raise KeyboardInterrupt
