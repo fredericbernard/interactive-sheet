@@ -89,3 +89,5 @@ if __name__ == '__main__':
     for i in corners_projector[0][0]:
         array.append([i[0], i[1], 0])
     calibrate(corners_camera, np.asarray(array, dtype=np.float32))
+
+    raise KeyboardInterrupt
