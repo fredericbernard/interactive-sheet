@@ -17,6 +17,8 @@ import vision_project
 from vision_project.projection.projector_window import ProjectorWindow
 from vision_project.vision.image_repository import ImageRepository, LiveCapture
 
+CONFIG_FILE_PATH = os.path.join(os.path.dirname(vision_project.vision.__file__), 'config/distance_calibration.yaml')
+
 
 class ArucoCalibrator(object):
 
@@ -33,7 +35,8 @@ class ArucoCalibrator(object):
         photo = ImageTk.PhotoImage(image=PIL.Image.fromarray(image))
 
         self.projector_window.canvas.create_image(500, 400, image=photo)
-        return np.array([[500 + 350, 400 + 350, 0], [500 + 350, 400 - 350, 0], [500 - 350, 400 - 350, 0], [500 - 350, 400 + 350, 0]], dtype=np.float32)
+        return np.array([[500 + 350, 400 + 350, 0], [500 + 350, 400 - 350, 0], [500 - 350, 400 - 350, 0],
+                         [500 - 350, 400 + 350, 0]], dtype=np.float32)
 
     def detect_aruco(self):
         self.aruco_dict = aruco.getPredefinedDictionary(aruco.DICT_4X4_250)
@@ -46,13 +49,16 @@ class ArucoCalibrator(object):
 
 
 def write_distance_calibration_file(inverse_rotation_matrix, inverse_camera_matrix, translation_vector):
-    data = {'inverse_rotation_matrix': np.asarray(inverse_rotation_matrix).tolist(), 'inverse_camera_matrix': np.asarray(inverse_camera_matrix).tolist(), 'tvec': np.asarray(translation_vector).tolist()}
+    data = {'inverse_rotation_matrix': np.asarray(inverse_rotation_matrix).tolist(),
+            'inverse_camera_matrix': np.asarray(inverse_camera_matrix).tolist(),
+            'tvec': np.asarray(translation_vector).tolist()}
 
-    with open(os.path.join(os.path.dirname(vision_project.vision.__file__), 'config/distance_calibration.yaml', 'w')) as f:
+    with open(CONFIG_FILE_PATH, 'w') as f:
         yaml.dump(data, f)
 
+
 def calibrate(corners_on_image, corners_on_projector):
-    with open(os.path.join(os.path.dirname(vision_project.vision.__file__), 'config/camera_calibration.yaml')) as f:
+    with open(CONFIG_FILE_PATH) as f:
         loaded_dict = yaml.load(f)
 
     distance_coefficients = loaded_dict.get('dist_coeff')
@@ -84,4 +90,3 @@ if __name__ == '__main__':
         corners_projector = calibrator.detect_aruco()
 
     calibrate(corners_camera, corners_projector)
-
