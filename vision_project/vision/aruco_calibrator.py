@@ -33,8 +33,7 @@ class ArucoCalibrator(object):
         photo = ImageTk.PhotoImage(image=PIL.Image.fromarray(image))
 
         self.projector_window.canvas.create_image(500, 400, image=photo)
-        return np.array([[500 + 350, 400 + 350, 0], [500 + 350, 400 - 350, 0], [500 - 350, 400 - 350, 0],
-                         [500 - 350, 400 + 350, 0]], dtype=np.float32)
+        return np.array([[150, 50, 0], [850, 50, 0], [850, 750, 0], [150, 750, 0]], dtype=np.float32)
 
     def detect_aruco(self):
         self.aruco_dict = aruco.getPredefinedDictionary(aruco.DICT_4X4_250)
@@ -88,6 +87,15 @@ if __name__ == '__main__':
     while not corners_projector:
         sleep(1)
         corners_projector = calibrator.detect_aruco()
-        print(corners_projector)
+        print("corners_projector", corners_projector)
+
+    print("camera_corners", corners_camera)
 
     calibrate(corners_camera, corners_projector[0])
+
+
+    def draw_circle(canvas, x, y, rad):
+        return canvas.create_oval(x - rad, y - rad, x + rad, y + rad, width=0, fill='blue')
+
+
+    draw_circle(window.canvas, 850, 750, 10)

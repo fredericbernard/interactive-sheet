@@ -33,4 +33,4 @@ if __name__ == '__main__':
 
     while True:
         capture.get_next_image().show_do_not_close()
-        sleep(1)
+        sleep(0.1)
