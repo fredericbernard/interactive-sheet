@@ -4,9 +4,11 @@ from os import listdir, path
 from os.path import isfile, join
 
 import cv2
+import os
 from jivago.lang.annotations import Override
 from jivago.lang.stream import Stream
 
+from vision_project.vision import config
 from vision_project.vision.image import Image
 from vision_project.vision.util import PixelCoordinate
 
@@ -104,8 +106,9 @@ class LiveCapture(ImageRepository):
 
 
 def load_camera_settings(camera_file: str):
+    settings_file = os.path.join(os.path.dirname(config.__file__), "cameraSettings.txt")
     try:
-        subprocess.call(["uvcdynctrl", "-L", "../infra/cameraMondeSettings.txt", "-d", camera_file])
+        subprocess.call(["uvcdynctrl", "-L", settings_file, "-d", camera_file])
     except:
         pass
 

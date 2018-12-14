@@ -33,7 +33,7 @@ class ArucoCalibrator(object):
         photo = ImageTk.PhotoImage(image=PIL.Image.fromarray(image))
 
         self.projector_window.canvas.create_image(500, 400, image=photo)
-        return np.array([[500 + 350, 400 + 350, 0], [500 + 350, 400 - 350, 0], [500 - 350, 400 - 350, 0], [500 - 350, 400 + 350, 0]], dtype=np.float32)
+        return np.array([[150, 50, 0], [850, 50, 0], [850, 750, 0], [150, 750, 0]], dtype=np.float32)
 
     def detect_aruco(self):
         self.aruco_dict = aruco.getPredefinedDictionary(aruco.DICT_4X4_250)
@@ -46,10 +46,14 @@ class ArucoCalibrator(object):
 
 
 def write_distance_calibration_file(inverse_rotation_matrix, inverse_camera_matrix, translation_vector):
-    data = {'inverse_rotation_matrix': np.asarray(inverse_rotation_matrix).tolist(), 'inverse_camera_matrix': np.asarray(inverse_camera_matrix).tolist(), 'tvec': np.asarray(translation_vector).tolist()}
+    data = {'inverse_rotation_matrix': np.asarray(inverse_rotation_matrix).tolist(),
+            'inverse_camera_matrix': np.asarray(inverse_camera_matrix).tolist(),
+            'tvec': np.asarray(translation_vector).tolist()}
 
-    with open(os.path.join(os.path.dirname(vision_project.vision.__file__), 'config/distance_calibration.yaml', 'w')) as f:
+    with open(os.path.join(os.path.dirname(vision_project.vision.__file__), 'config/distance_calibration.yaml'),
+              'w') as f:
         yaml.dump(data, f)
+
 
 def calibrate(corners_on_image, corners_on_projector):
     with open(os.path.join(os.path.dirname(vision_project.vision.__file__), 'config/camera_calibration.yaml')) as f:
@@ -62,7 +66,7 @@ def calibrate(corners_on_image, corners_on_projector):
     cameraMatrix = np.matrix(camera_matrix)
     iC = inv(cameraMatrix)
 
-    ret, rvec, tvec = cv2.solvePnP(corners_on_projector, corners_on_image, camera_matrix, distance_coefficients)
+    ret, rvec, tvec = cv2.solvePnP(corners_on_image, corners_on_projector, camera_matrix, distance_coefficients)
     rotation_vector = cv2.Rodrigues(rvec)[0]
     rotation_matrix = np.matrix(rotation_vector)
     iR = inv(rotation_matrix)
@@ -71,17 +75,27 @@ def calibrate(corners_on_image, corners_on_projector):
 
 if __name__ == '__main__':
     window = ProjectorWindow()
-    calibrator = ArucoCalibrator(window, LiveCapture("/dev/video0"))
-
     thread = threading.Thread(target=window.main)
-
     thread.start()
+
+    calibrator = ArucoCalibrator(window, LiveCapture("/dev/video0"))
 
     corners_camera = calibrator.show_aruco()
 
-    for i in range(2):
-        sleep(5)
+    corners_projector = []
+    sleep(2)
+    while not corners_projector:
+        sleep(1)
         corners_projector = calibrator.detect_aruco()
+        print("corners_projector", corners_projector)
 
-    calibrate(corners_camera, corners_projector)
+    print("camera_corners", corners_camera)
 
+    calibrate(corners_camera, corners_projector[0])
+
+
+    def draw_circle(canvas, x, y, rad):
+        return canvas.create_oval(x - rad, y - rad, x + rad, y + rad, width=0, fill='blue')
+
+
+    draw_circle(window.canvas, 850, 750, 10)
