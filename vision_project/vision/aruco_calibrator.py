@@ -1,17 +1,18 @@
-import os
 import threading
-
-import cv2
-from cv2 import aruco
 from time import sleep
 
+import os
 import PIL
-import numpy as np
+import cv2
 import yaml
-from PIL import ImageTk
-from jivago.lang.annotations import Inject
-from numpy.linalg import inv
+import numpy as np
 
+from numpy.linalg import inv
+from PIL import ImageTk
+import cv2.aruco as aruco
+from jivago.lang.annotations import Inject
+
+import infra
 import vision_project
 from vision_project.projection.projector_window import ProjectorWindow
 from vision_project.vision.image_repository import ImageRepository, LiveCapture
@@ -23,18 +24,21 @@ class ArucoCalibrator(object):
     def __init__(self, projector_window: ProjectorWindow, image_repository: ImageRepository):
         self.image_repository = image_repository
         self.projector_window = projector_window
-        self.aruco_dict = aruco.getPredefinedDictionary(aruco.DICT_4X4_250)
 
     def show_aruco(self):
-        image = aruco.drawMarker(self.aruco_dict, 3, 600)
+        aruco_dict = aruco.getPredefinedDictionary(aruco.DICT_4X4_250)
+
+        image = aruco.drawMarker(aruco_dict, 3, 700)
 
         photo = ImageTk.PhotoImage(image=PIL.Image.fromarray(image))
 
         self.projector_window.canvas.create_image(500, 400, image=photo)
-        return np.array([[500 + 300, 400 + 300], [500 + 300, 400 - 300], [500 - 300, 400 - 300],
-                         [500 - 300, 400 + 300]], dtype=np.float32)
+        return np.array([[500 + 350, 400 + 350, 0], [500 + 350, 400 - 350, 0], [500 - 350, 400 - 350, 0],
+                         [500 - 350, 400 + 350, 0]], dtype=np.float32)
 
     def detect_aruco(self):
+        self.aruco_dict = aruco.getPredefinedDictionary(aruco.DICT_4X4_250)
+
         image = self.image_repository.get_next_image()
         gray = cv2.cvtColor(image.frame, cv2.COLOR_BGR2GRAY)
         corners, ids, rejectedImgPoints = aruco.detectMarkers(gray, self.aruco_dict,
@@ -63,7 +67,7 @@ def calibrate(corners_on_image, corners_on_projector):
     cameraMatrix = np.matrix(camera_matrix)
     iC = inv(cameraMatrix)
 
-    ret, rvec, tvec = cv2.solvePnP(corners_on_projector, corners_on_image, camera_matrix, distance_coefficients)
+    ret, rvec, tvec = cv2.solvePnP(corners_on_image, corners_on_projector, camera_matrix, distance_coefficients)
     rotation_vector = cv2.Rodrigues(rvec)[0]
     rotation_matrix = np.matrix(rotation_vector)
     iR = inv(rotation_matrix)
@@ -74,23 +78,16 @@ if __name__ == '__main__':
     window = ProjectorWindow()
     thread = threading.Thread(target=window.main)
     thread.start()
-    capture = LiveCapture("/dev/video0")
-    calibrator = ArucoCalibrator(window, capture)
+
+    calibrator = ArucoCalibrator(window, LiveCapture("/dev/video0"))
 
     corners_camera = calibrator.show_aruco()
 
     corners_projector = []
-    sleep(5)
+    sleep(2)
     while not corners_projector:
-        capture.get_next_image().show_do_not_close()
+        sleep(1)
         corners_projector = calibrator.detect_aruco()
         print(corners_projector)
 
-    # array = []
-    # for i in corners_projector[0][0]:
-    #     array.append([i[0], i[1], 0])
-    calibrate(corners_projector[0], corners_camera)
-
-    def draw_circle(canvas, x, y, rad):
-        return canvas.create_oval(x - rad, y - rad, x + rad, y + rad, width=0, fill='blue')
-
+    calibrate(corners_camera, corners_projector[0])

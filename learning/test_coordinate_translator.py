@@ -18,11 +18,10 @@ if __name__ == '__main__':
 
 
     print("wating 5 seconds before starting...")
-    sleep(5)
 
     converter = CoordinateConverter()
 
-    for x in range(-200, 1000, 100):
+    for x in range(0, 1000, 100):
         print(f"({x},{x})")
         camera_coord = (x, x)
         projector_coord = converter.camera_coordinate_to_projector_coordinate(*camera_coord)
@@ -30,7 +29,7 @@ if __name__ == '__main__':
         draw_circle(window.canvas, projector_coord.x, projector_coord.y, rad=10)
 
         capture.get_next_image().show_do_not_close()
-        sleep(1)
+        sleep(0.2)
 
     while True:
         capture.get_next_image().show_do_not_close()
