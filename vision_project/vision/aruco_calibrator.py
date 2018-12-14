@@ -1,19 +1,16 @@
+import os
 import threading
 from time import sleep
 
-import os
 import PIL
 import cv2
-import yaml
-import numpy as np
-from jivago.lang.stream import Stream
-
-from numpy.linalg import inv
-from PIL import ImageTk
 import cv2.aruco as aruco
+import numpy as np
+import yaml
+from PIL import ImageTk
 from jivago.lang.annotations import Inject
+from numpy.linalg import inv
 
-import infra
 import vision_project
 from vision_project.projection.projector_window import ProjectorWindow
 from vision_project.vision.image_repository import ImageRepository, LiveCapture
@@ -74,12 +71,10 @@ def calibrate(corners_on_image, corners_on_projector):
 
 if __name__ == '__main__':
     window = ProjectorWindow()
+    thread = threading.Thread(target=window.main)
+    thread.start()
     capture = LiveCapture("/dev/video0")
     calibrator = ArucoCalibrator(window, capture)
-
-    thread = threading.Thread(target=window.main)
-
-    thread.start()
 
     corners_camera = calibrator.show_aruco()
 
