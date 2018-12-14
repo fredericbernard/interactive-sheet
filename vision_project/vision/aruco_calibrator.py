@@ -1,10 +1,11 @@
 import os
 import threading
+
+import cv2
+from cv2 import aruco
 from time import sleep
 
 import PIL
-import cv2
-import cv2.aruco as aruco
 import numpy as np
 import yaml
 from PIL import ImageTk
@@ -85,8 +86,11 @@ if __name__ == '__main__':
         corners_projector = calibrator.detect_aruco()
         print(corners_projector)
 
-    array = []
-    for i in corners_projector[0][0]:
-        array.append([i[0], i[1], 0])
-    calibrate(corners_camera, np.asarray(array, dtype=np.float32))
+    # array = []
+    # for i in corners_projector[0][0]:
+    #     array.append([i[0], i[1], 0])
+    calibrate(corners_projector[0], corners_camera)
+
+    def draw_circle(canvas, x, y, rad):
+        return canvas.create_oval(x - rad, y - rad, x + rad, y + rad, width=0, fill='blue')
 

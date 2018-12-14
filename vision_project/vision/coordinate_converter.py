@@ -6,7 +6,7 @@ import vision_project
 from vision_project.vision.util import WorldCoordinate
 
 
-class DistanceCalculator:
+class CoordinateConverter:
 
     def __init__(self):
         config_file_path = os.path.dirname(vision_project.vision.__file__)
