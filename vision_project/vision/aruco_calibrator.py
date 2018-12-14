@@ -25,13 +25,13 @@ class ArucoCalibrator(object):
         self.aruco_dict = aruco.getPredefinedDictionary(aruco.DICT_4X4_250)
 
     def show_aruco(self):
-        image = aruco.drawMarker(self.aruco_dict, 3, 700)
+        image = aruco.drawMarker(self.aruco_dict, 3, 600)
 
         photo = ImageTk.PhotoImage(image=PIL.Image.fromarray(image))
 
         self.projector_window.canvas.create_image(500, 400, image=photo)
-        return np.array([[500 + 350, 400 + 350, 0], [500 + 350, 400 - 350, 0], [500 - 350, 400 - 350, 0],
-                         [500 - 350, 400 + 350, 0]], dtype=np.float32)
+        return np.array([[500 + 300, 400 + 300, 0], [500 + 300, 400 - 300, 0], [500 - 300, 400 - 300, 0],
+                         [500 - 300, 400 + 300, 0]], dtype=np.float32)
 
     def detect_aruco(self):
         image = self.image_repository.get_next_image()
@@ -62,7 +62,7 @@ def calibrate(corners_on_image, corners_on_projector):
     cameraMatrix = np.matrix(camera_matrix)
     iC = inv(cameraMatrix)
 
-    ret, rvec, tvec = cv2.solvePnP(corners_on_projector, corners_on_image, camera_matrix, distance_coefficients)
+    ret, rvec, tvec = cv2.solvePnP(corners_on_image, corners_on_projector, camera_matrix, distance_coefficients)
     rotation_vector = cv2.Rodrigues(rvec)[0]
     rotation_matrix = np.matrix(rotation_vector)
     iR = inv(rotation_matrix)
