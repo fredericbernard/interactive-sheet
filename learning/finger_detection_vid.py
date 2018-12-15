@@ -78,7 +78,7 @@ while cap.isOpened():
         upper_color = np.array([75, 255, 255])
 
         mask = cv2.inRange(hsv, lower_color, upper_color)
-        result = cv2.bitwise_and(frame, frame, mask=mask)
+        #result = cv2.bitwise_and(frame, frame, mask=mask)
 
         _, threshold = cv2.threshold(mask, 40, 255, 0)
 
