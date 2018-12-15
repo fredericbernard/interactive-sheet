@@ -8,6 +8,7 @@ from jivago.lang.annotations import BackgroundWorker, Inject
 from jivago.lang.runnable import Runnable
 
 import infra
+from vision_project.vision import config
 from vision_project.vision.image import Image
 from vision_project.vision.image_repository import ImageRepository, SimpleImageRepository
 
@@ -48,14 +49,15 @@ class ImageCapturer(Runnable):
                 load_camera_settings(self.video_capture_file)
             if os.environ.get('DEBUG'):
                 time.sleep(0.1)
+
     def cleanup(self):
         capture.release()
         cv2.destroyAllWindows()
 
 
 def load_camera_settings(camera_file: str):
+    settings_file = os.path.join(os.path.dirname(config.__file__), "cameraSettings.txt")
     try:
-        if not camera_file.endswith('.avi'):
-            subprocess.call(["uvcdynctrl", "-L", "../infra/cameraMondeSettings.txt", "-d", camera_file])
+        subprocess.call(["uvcdynctrl", "-L", settings_file, "-d", camera_file])
     except:
         pass
