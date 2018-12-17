@@ -2,10 +2,8 @@ import threading
 from typing import List, Tuple
 
 from jivago.lang.registry import Component, Singleton
-from jivago.lang.stream import Stream
 
-from vision_project.vision.coordinate_translator import CoordinateTranslator
-from vision_project.vision.util import RelativeWorldCoordinate, ProjectorCoordinate, CameraCoordinate
+from vision_project.vision.util import RelativeWorldCoordinate
 
 
 @Component
@@ -20,10 +18,8 @@ class Drawing(object):
         with self.lock:
             self.lines.append((start, end))
 
-    def get_lines(self, origin: CameraCoordinate, coordinate_translator: CoordinateTranslator) -> \
-            List[Tuple[ProjectorCoordinate, ProjectorCoordinate]]:
-        return Stream(self.lines).map(lambda start, end: (coordinate_translator.to_projector(origin, start),
-                                                          coordinate_translator.to_projector(origin, end))).toList()
+    def get_lines(self) -> List[Tuple[RelativeWorldCoordinate, RelativeWorldCoordinate]]:
+        return self.lines
 
     def clear(self):
         with self.lock:

@@ -1,8 +1,8 @@
 import logging
 import time
+
 from jivago.lang.annotations import BackgroundWorker, Override, Inject
 from jivago.lang.runnable import Runnable
-from jivago.lang.stream import Stream
 
 from vision_project.detection.sheet_detector import SheetDetector
 from vision_project.drawing.drawing import Drawing
@@ -34,8 +34,16 @@ class DrawingUpdateWorker(Runnable):
                 sheets = self.sheet_detector.find_sheets(image)
                 self.projector_window.clear_canvas()
                 for sheet in sheets:
-                    lines = self.drawing.get_lines(sheet.origin, self.coordinate_translator)
-                    Stream(lines).forEach(lambda start, end: self.projector_window.draw_line(start, end))
+                    lines = self.drawing.get_lines()
+                    for start, end in lines:
+                        start_camera_coords, end_camera_coords = sheet.calculate_offset(start), sheet.calculate_offset(
+                            end)
+
+                        self.projector_window.draw_line(
+                            self.coordinate_translator.to_projector(start_camera_coords),
+                            self.coordinate_translator.to_projector(end_camera_coords)
+                        )
+
             except Exception as e:
                 self.LOGGER.warning(f"Unknown error while redrawing. {e}")
             finally:

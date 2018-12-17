@@ -36,14 +36,14 @@ class CoordinateConverter:
         t = self.inverse_rotation_matrix.dot(self.inverse_camera_matrix).dot(uv_point)
         t2 = self.inverse_rotation_matrix.dot(self.translation_vector)
         s = (t2[2]) / t[2]
-        object_point = (self.inverse_rotation_matrix.dot(s.item(0) * self.inverse_camera_matrix.dot(uv_point) - self.translation_vector))
+        object_point = (self.inverse_rotation_matrix.dot(
+            s.item(0) * self.inverse_camera_matrix.dot(uv_point) - self.translation_vector))
         return ProjectorCoordinate(object_point.item(0), object_point.item(1))
 
 
 class CalibratedCoordinateTranslator(CoordinateTranslator):
 
     @Override
-    def to_projector(self, origin: CameraCoordinate,
-                     relative_coordinate: RelativeWorldCoordinate) -> ProjectorCoordinate:
+    def to_projector(self, origin: CameraCoordinate) -> ProjectorCoordinate:
         coordinate_tuple = CoordinateConverter().camera_coordinate_to_projector_coordinate(origin.x, origin.y)
-        return coordinate_tuple + PixelCoordinate(relative_coordinate.x, relative_coordinate.y)
+        return coordinate_tuple
