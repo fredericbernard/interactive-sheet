@@ -57,7 +57,7 @@ class SheetDetectorTest(unittest.TestCase):
             expected_origin = PixelCoordinate(*label['origin'])
             expected_opposite = PixelCoordinate(*label['opposite'])
 
-            if not sheets[0].origin.isclose(expected_origin, delta=10) or not sheets[0].oposite_corner.isclose(
+            if not sheets[0].origin.isclose(expected_origin, delta=10) or not sheets[0].opposite_corner.isclose(
                     expected_opposite, delta=10):
                 incorrect += 1
             else:

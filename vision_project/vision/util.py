@@ -41,6 +41,40 @@ class PixelCoordinate:
     def __str__(self):
         return f"PixelCoordinate: ({self.x}, {self.y})"
 
+    def rotate(self, angle_rad: float) -> "SubPixelCoordinate":
+        return SubPixelCoordinate(
+            math.cos(angle_rad) * self.x - math.sin(angle_rad) * self.y,
+            math.sin(angle_rad) * self.x + math.cos(angle_rad) * self.y
+        )
+
+
+class SubPixelCoordinate(object):
+
+    def __init__(self, x: float, y: float):
+        self.x = x
+        self.y = y
+
+    def normalize(self) -> "SubPixelCoordinate":
+        return SubPixelCoordinate(
+            self.x / self.euclidean_length(),
+            self.y / self.euclidean_length()
+        )
+
+    def rotate(self, angle_rad: float) -> "SubPixelCoordinate":
+        return SubPixelCoordinate(
+            math.cos(angle_rad) * self.x - math.sin(angle_rad) * self.y,
+            math.sin(angle_rad) * self.x + math.cos(angle_rad) * self.y
+        )
+
+    def euclidean_length(self):
+        return math.sqrt(self.x ** 2 + self.y ** 2)
+
+    def __mul__(self, other: float) -> "SubPixelCoordinate":
+        return SubPixelCoordinate(self.x * other, self.y * other)
+
+    def __add__(self, other) -> "SubPixelCoordinate":
+        return SubPixelCoordinate(self.x + other.x, self.y + other.y)
+
 
 class CameraCoordinate(PixelCoordinate):
     pass
@@ -72,6 +106,9 @@ class WorldCoordinate(object):
 
     def is_close(self, other: "WorldCoordinate", delta=0.02) -> bool:
         return math.isclose(self.x, other.x, abs_tol=delta) and math.isclose(self.y, other.y, abs_tol=delta)
+
+    def euclidean_length(self) -> float:
+        return math.sqrt(self.x ** 2 + self.y ** 2)
 
 
 class RelativeWorldCoordinate(WorldCoordinate):
