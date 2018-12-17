@@ -38,6 +38,9 @@ class PixelCoordinate:
     def euclidean_length(self):
         return math.sqrt(self.x ** 2 + self.y ** 2)
 
+    def __str__(self):
+        return f"PixelCoordinate: ({self.x}, {self.y})"
+
 
 class CameraCoordinate(PixelCoordinate):
     pass
