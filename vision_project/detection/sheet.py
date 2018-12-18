@@ -1,6 +1,7 @@
 from math import sqrt
 
 import math
+from typing import Optional
 
 from vision_project.vision.util import CameraCoordinate, RelativeWorldCoordinate
 
@@ -29,4 +30,22 @@ class Sheet(object):
         offset = horizontal_offset + vertical_offset
 
         return self.origin + offset
-        print("hello")
+
+    def to_relative_coordinate(self, coordinate: CameraCoordinate) -> Optional[RelativeWorldCoordinate]:
+
+        if self.__is_coordinate_inside_sheet(coordinate):
+            angle = math.atan2(self.main_axis.y, self.main_axis.x)
+            rotated_origin = self.origin.rotate(-angle)
+            rotated_coordinate = coordinate.rotate(-angle)
+            x = ((rotated_coordinate.x - rotated_origin.x) / self.width_px) * WIDTH_MM
+            y = ((rotated_origin.y - rotated_coordinate.y) / self.height_px) * HEIGHT_MM
+            return RelativeWorldCoordinate(x, y)
+        return None
+
+    def __is_coordinate_inside_sheet(self, coordinate: CameraCoordinate):
+        angle = math.atan2(self.main_axis.y, self.main_axis.x)
+        rotated_origin = self.origin.rotate(-angle)
+        rotated_opposite_corner = self.opposite_corner.rotate(-angle)
+        rotated_coordinate = coordinate.rotate(-angle)
+        return (rotated_origin.x <= rotated_coordinate.x <= rotated_opposite_corner.x) \
+            and (rotated_opposite_corner.y <= rotated_coordinate.y <= rotated_origin.y)
