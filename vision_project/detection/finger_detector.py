@@ -8,7 +8,7 @@ from jivago.lang.registry import Component
 
 from vision_project.detection.finger import Finger
 from vision_project.vision.image import Image
-from vision_project.vision.util import Mask
+from vision_project.vision.util import Mask, CameraCoordinate
 
 MAX_THRESHOLD = 255
 THRESHOLD = 40
@@ -61,7 +61,7 @@ class FingerDetector(object):
             cx, cy = centroid
             x = np.array(max_area[s][:, 0][:, 0], dtype=np.float)
             y = np.array(max_area[s][:, 0][:, 1], dtype=np.float)
-            dist = cv2.squrt(cv2.add(cv2.pow(cv2.substract(x, cx), 2), cv2.pow(cv2.substract(y, cy), 2)))
+            dist = cv2.sqrt(cv2.add(cv2.pow(cv2.subtract(x, cx), 2), cv2.pow(cv2.subtract(y, cy), 2)))
             max_dist = np.argmax(dist)
 
             if max_dist < len(s):
@@ -71,7 +71,7 @@ class FingerDetector(object):
             else:
                 return None
 
-    def coord_to_finger(self, point):
+    def coord_to_finger(self, point: tuple):
         if point is not None:
-            return Finger(point)
+            return Finger(CameraCoordinate(*point))
         return None

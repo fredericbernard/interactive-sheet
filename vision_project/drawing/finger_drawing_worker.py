@@ -11,7 +11,6 @@ from vision_project.detection.finger_detector import FingerDetector
 from vision_project.detection.sheet import Sheet
 from vision_project.detection.sheet_detector import SheetDetector
 from vision_project.drawing.drawing import Drawing
-from vision_project.vision.coordinate_translator import CoordinateTranslator
 from vision_project.vision.image_repository import ImageRepository
 from vision_project.vision.util import RelativeWorldCoordinate
 
@@ -34,15 +33,19 @@ class FingerDrawingWorker(Runnable):
     @Override
     def run(self):
         while not self.should_exit:
-            image = self.image_repository.get_next_image()
-            finger = self.finger_detector.find_finger(image)
-            if finger:
-                sheets = self.sheet_detector.find_sheets(image)
-                current_position = self.__get_relative_world_coordinate_of_finger(finger, sheets)
-                if self.__should_draw_line(current_position):
-                    self.drawing.draw_line(self.last_position, current_position)
-                self.last_position = current_position
-            time.sleep(0.25)
+            try:
+                image = self.image_repository.get_next_image()
+                finger = self.finger_detector.find_finger(image)
+                if finger:
+                    sheets = self.sheet_detector.find_sheets(image)
+                    current_position = self.__get_relative_world_coordinate_of_finger(finger, sheets)
+                    if self.__should_draw_line(current_position):
+                        self.drawing.draw_line(self.last_position, current_position)
+                    self.last_position = current_position
+            except Exception as e:
+                FingerDrawingWorker.LOGGER.warning(f"Uncaught exception {e}.")
+            finally:
+                time.sleep(0.25)
 
     def __get_relative_world_coordinate_of_finger(self, finger: Finger, sheets: List[Sheet]) \
             -> Optional[RelativeWorldCoordinate]:
