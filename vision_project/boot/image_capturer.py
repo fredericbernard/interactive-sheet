@@ -9,6 +9,7 @@ from jivago.lang.runnable import Runnable
 
 import infra
 from vision_project.vision import config
+from vision_project.vision.distortion_remover import DistortionRemover
 from vision_project.vision.image import Image
 from vision_project.vision.image_repository import ImageRepository, SimpleImageRepository
 
@@ -19,7 +20,8 @@ capture = None
 class ImageCapturer(Runnable):
 
     @Inject
-    def __init__(self, image_repository: ImageRepository, environment: SystemEnvironmentProperties):
+    def __init__(self, image_repository: ImageRepository, environment: SystemEnvironmentProperties, distortion_remover: DistortionRemover):
+        self.distortion_remover = distortion_remover
         self.image_repository: SimpleImageRepository = image_repository
         self.video_capture_file = environment.get('CAPTURE')
         if self.video_capture_file is None and environment.get('DEBUG'):
@@ -39,8 +41,8 @@ class ImageCapturer(Runnable):
 
             is_frame_returned, frame = capture.read()
             if is_frame_returned:
-                self.image_repository.set_image(Image(frame))
-
+                frame_without_distortion = self.distortion_remover.remove_distortion(frame)
+                self.image_repository.set_image(Image(frame_without_distortion))
             else:
                 capture = cv2.VideoCapture(self.video_capture_file)
                 capture.set(cv2.CAP_PROP_FRAME_HEIGHT, 800)

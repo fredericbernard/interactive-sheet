@@ -1,5 +1,6 @@
 import cv2
 import yaml
+import numpy as np
 
 
 class DistortionRemover:
