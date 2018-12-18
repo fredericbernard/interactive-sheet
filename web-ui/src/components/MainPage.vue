@@ -23,5 +23,6 @@ export default {
   flex-direction: row;
   padding-right: 10rem;
   padding-left: 10rem;
+  padding-top: 1rem;
 }
 </style>
