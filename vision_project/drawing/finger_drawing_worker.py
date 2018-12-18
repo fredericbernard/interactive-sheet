@@ -1,5 +1,4 @@
 import logging
-import time
 from typing import Optional, List
 
 from jivago.lang.annotations import BackgroundWorker, Inject, Override
@@ -17,7 +16,6 @@ from vision_project.vision.util import RelativeWorldCoordinate
 
 @BackgroundWorker
 class FingerDrawingWorker(Runnable):
-
     LOGGER = logging.getLogger("FingerDrawingWorker")
 
     @Inject
@@ -38,23 +36,27 @@ class FingerDrawingWorker(Runnable):
                 finger = self.finger_detector.find_finger(image)
                 if finger:
                     sheets = self.sheet_detector.find_sheets(image)
-                    current_position = self.__get_relative_world_coordinate_of_finger(finger, sheets)
-                    if self.__should_draw_line(current_position):
+                    current_position = self._get_relative_world_coordinate_of_finger(finger, sheets)
+                    if self._should_draw_line(current_position):
                         self.drawing.draw_line(self.last_position, current_position)
+                    
                     self.last_position = current_position
             except Exception as e:
                 FingerDrawingWorker.LOGGER.warning(f"Uncaught exception {e}.")
             finally:
-                time.sleep(0.25)
+                pass
+                # time.sleep(0.25)
 
-    def __get_relative_world_coordinate_of_finger(self, finger: Finger, sheets: List[Sheet]) \
-            -> Optional[RelativeWorldCoordinate]:
-        return Stream(sheets)\
-                    .map(lambda sheet: sheet.to_relative_coordinate(finger.position)) \
-                    .firstMatch(lambda coordinate: coordinate is not None)
+    def _get_relative_world_coordinate_of_finger(self, finger: Finger, sheets: List[Sheet]) -> Optional[
+        RelativeWorldCoordinate]:
+        return Stream(sheets) \
+            .map(lambda sheet: sheet.to_relative_coordinate(finger.position)) \
+            .firstMatch(lambda coordinate: coordinate is not None)
 
-    def __should_draw_line(self, current_position: Optional[RelativeWorldCoordinate]):
+    def _should_draw_line(self, current_position: Optional[RelativeWorldCoordinate]):
         if self.last_position == current_position:
+            return False
+        if not self.last_position:
             return False
         if not current_position:
             return False
