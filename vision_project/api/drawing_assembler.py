@@ -21,3 +21,7 @@ class DrawingAssembler(object):
             [line[0].x, line[0].y],
             [line[1].x, line[1].y]
         )
+
+    def from_line_model(self, line_model: LineModel) -> Tuple[RelativeWorldCoordinate, RelativeWorldCoordinate]:
+        return (RelativeWorldCoordinate(line_model.start[0], line_model.start[1]),
+                RelativeWorldCoordinate(line_model.end[0], line_model.end[1]))

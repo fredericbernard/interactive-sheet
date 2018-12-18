@@ -3,7 +3,7 @@ from jivago.wsgi.annotations import Resource, Path
 from jivago.wsgi.methods import GET, DELETE, POST
 
 from vision_project.api.drawing_assembler import DrawingAssembler
-from vision_project.api.drawing_model import DrawingModel
+from vision_project.api.drawing_model import DrawingModel, LineModel
 from vision_project.drawing.drawing import Drawing
 
 
@@ -23,4 +23,9 @@ class DrawingResource(object):
     @Path("/clear")
     def clear_drawing(self) -> str:
         self.drawing.clear()
+        return "OK"
+
+    @POST
+    def add_line(self, line: LineModel) -> str:
+        self.drawing.draw_line(*self.drawing_assembler.from_line_model(line))
         return "OK"

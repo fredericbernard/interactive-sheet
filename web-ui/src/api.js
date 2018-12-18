@@ -7,3 +7,18 @@ export function getDrawing() {
 export function clearDrawing() {
   return fetch(`${serverUrl}/drawing/clear`, {method: 'post'});
 }
+
+export function addLine(start_x, start_y, end_x, end_y) {
+  return fetch(`${serverUrl}/drawing`, {
+    method: 'post',
+    headers: {
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify({
+      start: [
+        start_x, start_y
+      ],
+      end: [end_x, end_y]
+    })
+  });
+}
