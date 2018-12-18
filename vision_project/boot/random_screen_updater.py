@@ -7,7 +7,7 @@ from vision_project.drawing.drawing import Drawing
 from vision_project.vision.util import RelativeWorldCoordinate
 
 
-@Scheduled(every=Duration.SECOND)
+# @Scheduled(every=Duration.SECOND)
 class RandomScreenUpdater(Runnable):
 
     @Inject
