@@ -2,7 +2,7 @@ import os
 from pathlib import Path
 from typing import List
 
-from jivago.config.production_jivago_context import ProductionJivagoContext
+from jivago.config.debug_jivago_context import DebugJivagoContext
 from jivago.jivago_application import JivagoApplication
 from jivago.lang.annotations import Override
 
@@ -12,7 +12,7 @@ from vision_project.vision.coordinate_translator import CoordinateTranslator
 from vision_project.vision.image_repository import ImageRepository, SimpleImageRepository
 
 
-class CameraCaptureContext(ProductionJivagoContext):
+class CameraCaptureContext(DebugJivagoContext):
 
     @Override
     def configure_service_locator(self):
