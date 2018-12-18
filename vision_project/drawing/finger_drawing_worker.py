@@ -39,8 +39,8 @@ class FingerDrawingWorker(Runnable):
                     current_position = self._get_relative_world_coordinate_of_finger(finger, sheets)
                     if self._should_draw_line(current_position):
                         self.drawing.draw_line(self.last_position, current_position)
-                    
-                    self.last_position = current_position
+                    if current_position is not None:
+                        self.last_position = current_position
             except Exception as e:
                 FingerDrawingWorker.LOGGER.warning(f"Uncaught exception {e}.")
             finally:
