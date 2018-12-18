@@ -21,7 +21,7 @@ class ImageCapturer(Runnable):
     def __init__(self, image_repository: ImageRepository, application_properties: ApplicationProperties):
         self.image_repository: SimpleImageRepository = image_repository
         self.video_capture_file = application_properties['camera_file']
-        self.debug : bool = application_properties['debug']
+        self.debug: bool = application_properties['debug']
 
     def run(self):
         global capture
@@ -43,7 +43,7 @@ class ImageCapturer(Runnable):
                 capture.set(cv2.CAP_PROP_FRAME_WIDTH, 1280)
 
                 load_camera_settings(self.video_capture_file)
-            if os.environ.get('DEBUG'):
+            if self.debug:
                 time.sleep(0.1)
 
     def cleanup(self):
