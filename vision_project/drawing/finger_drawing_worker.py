@@ -25,6 +25,7 @@ class FingerDrawingWorker(Runnable):
         self.image_repository = image_repository
         self.sheet_detector = sheet_detector
         self.finger_detector = finger_detector
+        self.no_current_position_found_in_a_row = 0
         self.last_position: RelativeWorldCoordinate = None
         self.should_exit = False
 
@@ -39,8 +40,8 @@ class FingerDrawingWorker(Runnable):
                     current_position = self._get_relative_world_coordinate_of_finger(finger, sheets)
                     if self._should_draw_line(current_position):
                         self.drawing.draw_line(self.last_position, current_position)
-                    if current_position is not None:
-                        self.last_position = current_position
+                    self._update_last_position(current_position)
+
             except Exception as e:
                 FingerDrawingWorker.LOGGER.warning(f"Uncaught exception {e}.")
             finally:
@@ -54,13 +55,18 @@ class FingerDrawingWorker(Runnable):
             .firstMatch(lambda coordinate: coordinate is not None)
 
     def _should_draw_line(self, current_position: Optional[RelativeWorldCoordinate]):
-        if self.last_position == current_position:
-            return False
-        if not self.last_position:
-            return False
-        if not current_position:
+        if self.last_position == current_position or self.last_position is None or current_position is None:
             return False
         return True
+
+    def _update_last_position(self, current_position: RelativeWorldCoordinate):
+        if current_position is not None:
+            self.last_position = current_position
+        elif current_position:
+            self.no_current_position_found_in_a_row += 1
+        if self.no_current_position_found_in_a_row > 5:
+            self.last_position = None
+            self.no_current_position_found_in_a_row = 0
 
     def cleanup(self):
         self.should_exit = True
