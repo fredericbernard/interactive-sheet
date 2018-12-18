@@ -6,7 +6,7 @@ import cv2
 import learning
 
 
-class LocalImageRepository(object):
+class _LocalImageRepository(object):
 
     def __init__(self, dataset_name: str):
         folder_name = os.path.join(os.path.dirname(os.path.dirname(learning.__file__)), "infra/training_datasets")
