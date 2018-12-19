@@ -50,8 +50,8 @@ class FingerDrawingWorker(Runnable):
                 pass
                 # time.sleep(0.25)
 
-    def _get_relative_world_coordinate_of_finger(self, finger: Finger, sheets: List[Sheet]) -> Optional[
-        RelativeWorldCoordinate]:
+    def _get_relative_world_coordinate_of_finger(self, finger: Finger, sheets: List[Sheet]) \
+            -> Optional[RelativeWorldCoordinate]:
         return Stream(sheets) \
             .map(lambda sheet: sheet.to_relative_coordinate(finger.position)) \
             .firstMatch(lambda coordinate: coordinate is not None)
