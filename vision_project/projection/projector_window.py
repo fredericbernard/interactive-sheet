@@ -12,6 +12,9 @@ class ProjectorWindow(object):
     def draw_line(self, start: ProjectorCoordinate, end: ProjectorCoordinate):
         self.canvas.create_line(start.x, start.y, end.x, end.y, fill='magenta', width=2)
 
+    def add_text(self, text: str, center: ProjectorCoordinate):
+        self.canvas.create_text(center.x, center.y, centefill="darkblue", font="Times 20 italic bold", text=text)
+
     def clear_canvas(self):
         self.canvas.delete('all')
 

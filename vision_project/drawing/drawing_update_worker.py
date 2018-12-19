@@ -42,16 +42,12 @@ class DrawingUpdateWorker(Runnable):
                     self._refresh_sheets(sheets)
                 last_sheets = sheets
                 last_number_of_lines = len(self.drawing.get_lines())
+
             except Exception as e:
                 self.LOGGER.warning(f"Unknown error while redrawing. {e}")
             finally:
                 # pass
                 time.sleep(0.1)
-
-    def _refresh_sheets(self, sheets: List[Sheet]):
-        for sheet in sheets:
-            lines = self.drawing.get_lines()
-            self._draw_lines_on_sheet(lines, sheet)
 
     def _should_refresh_sheets(self, sheets: List[Sheet], last_sheets: List[Sheet], last_number_of_lines: int):
         matching_sheets = Stream(last_sheets).filter(lambda last_sheet: self._is_in(last_sheet, sheets)).toList()
@@ -69,6 +65,13 @@ class DrawingUpdateWorker(Runnable):
             return True
         return False
 
+    def _refresh_sheets(self, sheets: List[Sheet]):
+        for sheet in sheets:
+            lines = self.drawing.get_lines()
+            self._draw_lines_on_sheet(lines, sheet)
+            texts = self.drawing.get_texts()
+            self._draw_texts_on_sheet(texts, sheet)
+
     def _draw_lines_on_sheet(self, lines: List[Tuple[RelativeWorldCoordinate, RelativeWorldCoordinate]], sheet: Sheet):
         for start, end in lines:
             start_camera_coords, end_camera_coords = sheet.calculate_offset(start), sheet.calculate_offset(end)
@@ -76,6 +79,11 @@ class DrawingUpdateWorker(Runnable):
                 self.coordinate_translator.to_projector(start_camera_coords),
                 self.coordinate_translator.to_projector(end_camera_coords)
             )
+
+    def _draw_texts_on_sheet(self, texts: List[Tuple[str, RelativeWorldCoordinate]], sheet: Sheet):
+        for text, center in texts:
+            center_camera_coords = sheet.calculate_offset(center)
+            self.projector_window.add_text(texts, self.coordinate_translator.to_projector(center_camera_coords))
 
     def cleanup(self):
         self.should_exit = True

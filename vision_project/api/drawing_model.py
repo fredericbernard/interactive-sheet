@@ -16,3 +16,9 @@ class DrawingModel(object):
 
     def __init__(self, lines: List[LineModel]):
         self.lines = lines
+
+
+@Serializable
+class TextModel(object):
+    text: str
+    center: List[int]
