@@ -3,6 +3,7 @@
 \usepackage{pmgraph}
 \usepackage[normalem]{ulem}
 \usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
 \usepackage[french]{babel}
 \title{\textbf{GIF-4100 : Vision numérique\\ Projet de trimestre \\La feuille électronique}}
 \author{Olivier Beaulieu,\\Frédéric Bernard,\\Kento Otomo-Lauzon}
@@ -16,6 +17,8 @@
 \setlength{\textheight}{8.5in}
 %--------------------Indention
 \setlength{\parindent}{1cm}
+\usepackage{graphicx}
+\graphicspath{ {assets/} }
 
 \begin{document}
 %--------------------Title Page
@@ -49,7 +52,45 @@ résultat serait automatiquement reflété sur les feuilles des autres
 participants. De plus, des participants présents à distance pourraient effectuer
 le même exercice en se connectant à l'application web. 
 
-\subsection{}
+\subsection{Description de la méthode employée}
+Cette section décrit les aspects techniques nécessaires à la réalisation du projet.
+
+\subsubsection{Détection de la feuille blanche}
+La figure \ref{feuille_blanche} montre une vue qu'aurait la caméra du la surface
+de travail. Les paramètres de saisie de la caméra ont été choisis de sorte à
+faire ressortir la surface blanche sous l'éclairage dominant du projecteur. Par
+la suite, un seuillage sur les valeurs d'illuminance est effectué, de sorte à ne
+conserver que les pixels dont la « valeur » dans le repère HSV est supérieure à
+150, et ce, peu importe la valeur de \textit{hue} ou de \textit{saturation}.
+
+Ensuite, on identifie le rectangle englobant d'aire minimale pour obtenir
+l'orientation de la feuille et la coordonnée des coins, dans le repère caméra.
+Un exemple de détection est présenté à la figure \ref{detection_feuille}.
+
+\begin{figure}[h]
+  \centering
+  \includegraphics[width=8cm]{feuille-blanche.jpg}
+  \caption{Vue de la caméra}
+  \label{feuille_blanche}
+\end{figure}
+
+\begin{figure}[h]
+  \centering
+  \includegraphics[width=8cm]{localisation-feuille.png}
+  \caption{Délimitation des feuilles blanches.
+    Le rectangle rouge correspond au rectangle englobant d'aire minimale.}
+  \label{detection_feuille}
+\end{figure}
+
+\subsubsection{Détection du doigt}
+
+\subsubsection{Homographie entre l'image projetée et l'image capturée par la caméra}
+% processus de calibration
+
+\subsubsection{Logique de gestion de dessin}
+
+\subsubsection{Application web de visualisation et d'administration}
+
 
 \section{Performances}
 
