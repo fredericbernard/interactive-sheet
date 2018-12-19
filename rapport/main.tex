@@ -53,7 +53,12 @@ participants. De plus, des participants présents à distance pourraient effectu
 le même exercice en se connectant à l'application web. 
 
 \subsection{Description de la méthode employée}
-Cette section décrit les aspects techniques nécessaires à la réalisation du projet.
+Cette section décrit les aspects techniques nécessaires à la réalisation du
+projet. L'application des algorithmes de vision artificielle est faite à l'aide
+de la bibliothèque \textit{OpenCV}, l'affichage graphique pour le projecteur est
+faite au moyen du module \textit{Python} \textit{Tkinter}, l'application web est
+faite avec \textit{VueJS} et la gestion du serveur et du flot d'exécution est
+faite par le \textit{framework} \textit{Jivago}. 
 
 \subsubsection{Détection de la feuille blanche}
 La figure \ref{feuille_blanche} montre une vue qu'aurait la caméra du la surface
@@ -83,14 +88,62 @@ Un exemple de détection est présenté à la figure \ref{detection_feuille}.
 \end{figure}
 
 \subsubsection{Détection du doigt}
+Similairement, la détection du doigt s'effectue par un seuillage appliqué sur la
+valeur HSV des pixels. Pour le moment, un seuil est prédéfini de manière à
+reconnaître la main de l'un des présentateurs. La position du doigt elle-même
+est choisie comme le point les plus éloigné du centre de masse de l'amas de
+pixels représentant le bras de l'expérimentateur. La figure
+\ref{detection_doigt} illustre le résultat de cette procédure.
 
-\subsubsection{Homographie entre l'image projetée et l'image capturée par la caméra}
-% processus de calibration
+\begin{figure}[h]
+  \centering
+  \includegraphics[width=8cm]{detection-doigt.png}
+  \caption{Filtre appliqué pour détecter le doigt. Le point rouge correspond à
+    la position identifiée pour le doigt, et les points jaunes correspondent aux
+    positions passées.}
+  \label{detection_doigt}
+\end{figure}
+
+
+\subsubsection{Homographie entre l'image projetée et l'image capturée par la
+  caméra}
+La calibration initiale de la caméra est effectuée au moyen d'un damier. De
+cette manière, nous sommes en mesure d'annuler les effets de la distorsion sur
+les images captées.
+
+Afin d'effectuer la conversion des coordonnées entre les repères de la caméra et
+du projecteur, l'appariement initial des points pour le calcul de l'homographie
+est effectué au moyen d'un marqueur \textit{ArUco}. Avant de débuter la
+démonstration, le script de calibration est lancé, et projette un marqueur.
+L'appariement des quatre coins est effectué en utilisant les algorithmes de
+détection d'\textit{ArUco} disponibles dans \textit{OpenCV}. 
+
+% TODO : image processus de calibrataion
 
 \subsubsection{Logique de gestion de dessin}
 
+Le dessin à afficher est sauvegardé de manière vectorielle. Chaque ligne est
+enregistrée individuellement, et les distances sont encodées en millimètres, et
+sont calculées en utilisant la définition du format de papier \textit{US
+  Letter} (8.5po x 11po). Cette gestion permet de maintenir la taille du dessin,
+dans le cas où la feuille est placée plus ou moins loin du projecteur.
+
+Un \textit{thread} en arrière plan se charge de maintenir à jour le canevas qui
+est projeté, de sorte que l'affiche s'effectue en temps réel. 
+
 \subsubsection{Application web de visualisation et d'administration}
 
+Enfin, plusieurs routes d'API REST sont exposées au moyen d'une application
+\textit{Jivago}, ce qui permet à une application web de visualiser en direct le
+dessin. L'application web elle-même, récupère l'information du canevas à chaque
+seconde pour l'afficher.
+
+\begin{figure}
+  \centering
+  \includegraphics[width=8cm]{web-canvas.png}
+  \caption{Affichage du canevas en direct depuis un navigateur web.}
+  \label{web_ui}
+  \end{figure}
 
 \section{Performances}
 
