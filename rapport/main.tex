@@ -1,6 +1,7 @@
 \documentclass[11pt]{report}
 \usepackage{outline}
 \usepackage{pmgraph}
+\usepackage{url}
 \usepackage[normalem]{ulem}
 \usepackage[utf8]{inputenc}
 \usepackage[T1]{fontenc}
@@ -146,12 +147,82 @@ seconde pour l'afficher (figure \ref{web_ui}).
   \end{figure}
 
 \section{Performances}
+La plus grande force de notre système est que le traitement s'effectue en temps
+réel. En effet, la détection des feuilles blanches et du doigt sont relativement
+peu complexes, et nous permettre de mettre à jour en temps réel l'affichage pour
+se conformer aux mouvements de l'utilisateur.
+
+De plus, la détection de la feuille et du doigt sont plutôt précises, en
+tenant compte des limites matérielles. La localisation des feuilles, lorsque
+celles-ci sont immobiles, ne varie que d'un ou deux pixels, de manière générale.
+De même, la détection du doigt, en considérant la taille relativement inférieure
+de celui-ci par rapport aux autres éléments de la scène, est assez précise pour
+être utilisable dans notre application. On reconnaît, somme toute, le tracé
+effectué par le démonstrateur.
+
+Par ailleurs, l'homographie qui lie les points de l'image captée à ceux des
+projetés s'effectue de manière rapide et précise. En effet, la correspondance
+entre les feuilles est cohérente et stable, et ce, peu importe la position de
+celles-ci sur la table. À titre de validation supplémentaire, le script de
+calibration affiche des points spécifiques en utilisant la matrice d'homographie
+lorsque le calcul initial est terminé, ce qui permet de juger en un coup d'œil
+de la validité de la matrice crée. Puisque la calibration est effectuée avant
+chaque démonstration et que le montage est fixe, il n'y a pas de réelle perte de
+précision durant cet intervalle de temps.
+
 
 \section{Améliorations possibles}
-% Utiliser une seconde caméra pour identifier quand on touche vs quand on touche pas
-% Faire un « calibrage » sur le seuillage de couleur pour trouver le bras
+Toutefois, le système comporte aussi son lot de failles et d'améliorations
+potentielles. Par exemple, malgré que le système soit utilisable en « temps
+réel », il existe une latence entre le moment où l'action est effectuée et
+l'apparition de la rétroaction à l'écran. Une partie de cela est dû à la
+relative lenteur de la prise d'image (limitée entre 10 et 15 fps dans notre
+cas), et le va-et-vient entre la logique de haut-niveau effectuée en
+\textit{Python} et les routines de calcul matriciel d'\textit{OpenCV} et de
+\textit{numpy}. Cette seconde cause est visible puisque l'on observe un délai
+entre le tracé de la première ligne du dessin et la dernière, alors que les
+calculs s'effectuent sur la même image.
 
+À ce sujet, une première amélioration pourrait être de réduire la résolution de
+prise d'image, ce qui aurait pour effet premier d'augmenter la vitesse de
+capture, par exemple à 30 fps dans le cas la caméra utilisée. Toutefois, il
+faudrait chercher le compromis entre la vitesse de traitement et de précision
+dans la localisation. Pour les besoins de la démonstration, il a été jugé
+valable de laisser le tout à la résolution de 1280x800.
 
+On pourrait aussi chercher à minimiser les copies de matrices et les
+allers-retours coûteux entre les matrices \textit{numpy} et les objets
+\textit{Python}. À ce stade-ci, les gains en performance sont de basse priorité
+par rapport aux autres améliorations possibles.
 
+Pour améliorer la précision du système, notamment en ce qui concerne la
+localisation et la détection du doigt, une première amélioration consisterait en
+la sélection d'un seuil de couleur en fonction de l'expérimentateur. Pour
+l'instant, les seuils étant prédéfinis dans le code, il est difficile de tenir
+compte des différences entre plusieurs utilisateurs. Dans certains cas, le teint
+différent d'un utilisateur entraîne une forte instabilité dans la détection,
+allant jusqu'à rendre le système inutilisable. Ce phénomène est présent même
+pour des petites variations entre les membres de l'équipe. À cet effet, une
+approche pourrait être de choisir un seuil de couleur au démarrage de
+l'application, où le système pourrait demander à l'utilisateur de montrer sa
+main, pour qu'il puisse choisir un seuil en fonction de l'histogramme des
+valeurs d'illuminance des pixels.
+
+Une autre approche serait d'explorer les méthodes de séparation d'arrière-plan,
+plusieurs desquelles sont incluses dans \textit{OpenCV}. Par exemple, la
+librairie propose des approches par MoG (\textit{Mixture of Gaussian}) pour
+effectuer la segmentation de
+l'arrière-plan\footnote{\url{https://docs.opencv.org/3.1.0/d1/dc5/tutorial_background_subtraction.html}}.
+Dans ce cas, une difficulté dont il font tenir compte est que les feuilles
+peuvent se déplacer dans la scène, ce qui pourrait les identifier, de manière
+erronée, comme faisant partie de l'avant-plan. 
+
+Finalement, la détection du doigt, dans son implantation actuelle, ne tient pas
+compte de la distance qui sépare le bout du doigt de la surface de la table. Ce
+problème mène régulièrement à l'ajout de traits non intentionnels sur la surface de
+dessin. Pour remédier à la situation, l'utilisation d'une seconde caméra, placée
+plus près de la table, pourrait permettre l'amélioration de la détection. La
+localisation serait toujours effectuée par la caméra monde, mais la détection du
+clic pourrait être effectué selon ce deuxième point de vue. 
 
 \end{document}
