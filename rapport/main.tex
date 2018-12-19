@@ -29,9 +29,27 @@ La solution proposée est constituée d'un projecteur et d'une caméra. Le
 projecteur est disposé de manière à illuminer une table, et la caméra sert à
 détecter la position de feuilles blanches et d'un doigt.
 
+\subsection{Fonctionnement général}
+Le système permet à un utilisateur, en utilisant son doigt, de dessiner sur une
+feuille en temps réel. En localisant la position du doigt et de la feuille
+blanche sur la table, le système superpose le tracé effectué par l'utilisateur
+sur la feuille. Dans le cas où plusieurs feuilles sont présentes sur la table,
+le dessin est dupliqué sur chaque feuille. Le dessin étant défini de manière
+relative à la feuille, celui-ci demeure à l'endroit, et ce, même si
+l'utilisateur déplace la feuille ou lui fait effectuer une rotation.
 
+Finalement, le dessin est visible depuis une application web, laquelle est
+accessible depuis un ordinateur.
 
+Dans un contexte de télétravail, on pourrait imaginer un scénario d'utilisation
+selon lequel deux collègues sont disposés autour de la table en ayant chacun une
+feuille. Les membres physiquement présents à la réunion pourraient participer à
+une séance de remue-méninges en dessinant sur leur propre feuille, et le
+résultat serait automatiquement reflété sur les feuilles des autres
+participants. De plus, des participants présents à distance pourraient effectuer
+le même exercice en se connectant à l'application web. 
 
+\subsection{}
 
 \section{Performances}
 
