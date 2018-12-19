@@ -10,7 +10,7 @@ from vision_project.vision.util import ProjectorCoordinate
 class ProjectorWindow(object):
 
     def draw_line(self, start: ProjectorCoordinate, end: ProjectorCoordinate):
-        self.canvas.create_line(start.x, start.y, end.x, end.y, fill='red', width=2)
+        self.canvas.create_line(start.x, start.y, end.x, end.y, fill='magenta', width=2)
 
     def clear_canvas(self):
         self.canvas.delete('all')

@@ -19,7 +19,7 @@ class CameraCaptureContext(DebugJivagoContext):
         super().configure_service_locator()
         repository = SimpleImageRepository()
         self.serviceLocator.bind(ImageRepository, repository)
-        self.serviceLocator.bind(CoordinateTranslator, CalibratedCoordinateTranslator)
+        self.serviceLocator.bind(CoordinateTranslator, CalibratedCoordinateTranslator())
 
     @Override
     def get_config_file_locations(self) -> List[str]:

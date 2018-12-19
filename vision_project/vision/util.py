@@ -75,6 +75,9 @@ class SubPixelCoordinate(object):
     def __add__(self, other) -> "SubPixelCoordinate":
         return SubPixelCoordinate(self.x + other.x, self.y + other.y)
 
+    def __sub__(self, other) -> "SubPixelCoordinate":
+        return SubPixelCoordinate(self.x - other.x, self.y - other.y)
+
 
 class CameraCoordinate(PixelCoordinate):
     pass

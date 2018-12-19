@@ -47,7 +47,8 @@ class DrawingUpdateWorker(Runnable):
             except Exception as e:
                 self.LOGGER.warning(f"Unknown error while redrawing. {e}")
             finally:
-                time.sleep(0.25)
+                # pass
+                time.sleep(0.1)
 
     def cleanup(self):
         self.should_exit = True

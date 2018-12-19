@@ -1,13 +1,12 @@
-import yaml
-import numpy as np
 import os
 
+import numpy as np
+import yaml
 from jivago.lang.annotations import Override
 
 import vision_project
 from vision_project.vision.coordinate_translator import CoordinateTranslator
-from vision_project.vision.util import WorldCoordinate, CameraCoordinate, RelativeWorldCoordinate, ProjectorCoordinate, \
-    PixelCoordinate
+from vision_project.vision.util import CameraCoordinate, ProjectorCoordinate
 
 
 class CoordinateConverter:
@@ -43,7 +42,10 @@ class CoordinateConverter:
 
 class CalibratedCoordinateTranslator(CoordinateTranslator):
 
+    def __init__(self):
+        self.converter = CoordinateConverter()
+
     @Override
     def to_projector(self, origin: CameraCoordinate) -> ProjectorCoordinate:
-        coordinate_tuple = CoordinateConverter().camera_coordinate_to_projector_coordinate(origin.x, origin.y)
+        coordinate_tuple = self.converter.camera_coordinate_to_projector_coordinate(origin.x, origin.y)
         return coordinate_tuple
