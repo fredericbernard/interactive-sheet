@@ -41,6 +41,8 @@ class FingerDrawingWorker(Runnable):
                     if self._should_draw_line(current_position):
                         self.drawing.draw_line(self.last_position, current_position)
                     self._update_last_position(current_position)
+                else:
+                    self.no_current_position_found_in_a_row += 1
 
             except Exception as e:
                 FingerDrawingWorker.LOGGER.warning(f"Uncaught exception {e}.")
@@ -64,7 +66,7 @@ class FingerDrawingWorker(Runnable):
             self.last_position = current_position
         elif current_position:
             self.no_current_position_found_in_a_row += 1
-        if self.no_current_position_found_in_a_row > 5:
+        if self.no_current_position_found_in_a_row > 8:
             self.last_position = None
             self.no_current_position_found_in_a_row = 0
 
