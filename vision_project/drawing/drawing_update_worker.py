@@ -61,7 +61,7 @@ class DrawingUpdateWorker(Runnable):
         matching_sheet = Stream(sheets).firstMatch(lambda sheet_to_compare:
                                                    sheet.origin.isclose(sheet_to_compare.origin, 1)
                                                     and
-                                                   sheet.opposite_corner.isclose(sheet_to_compare.opposite_corner))
+                                                   sheet.opposite_corner.isclose(sheet_to_compare.opposite_corner, 1))
         if matching_sheet is not None:
             return True
         return False
