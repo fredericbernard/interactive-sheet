@@ -32,14 +32,16 @@ class DrawingUpdateWorker(Runnable):
     @Override
     def run(self):
         last_sheets: List[Sheet] = []
+        last_number_of_lines = 0
         while not self.should_exit:
             try:
                 image = self.image_repository.get_next_image()
                 sheets = self.sheet_detector.find_sheets(image)
-                if self._should_refresh_sheets(sheets, last_sheets):
+                if self._should_refresh_sheets(sheets, last_sheets, last_number_of_lines):
                     self.projector_window.clear_canvas()
                     self._refresh_sheets(sheets)
                 last_sheets = sheets
+                last_number_of_lines = len(self.drawing.get_lines())
             except Exception as e:
                 self.LOGGER.warning(f"Unknown error while redrawing. {e}")
             finally:
@@ -51,17 +53,18 @@ class DrawingUpdateWorker(Runnable):
             lines = self.drawing.get_lines()
             self._draw_lines_on_sheet(lines, sheet)
 
-    def _should_refresh_sheets(self, sheets: List[Sheet], last_sheets: List[Sheet]):
+    def _should_refresh_sheets(self, sheets: List[Sheet], last_sheets: List[Sheet], last_number_of_lines: int):
         matching_sheets = Stream(last_sheets).filter(lambda last_sheet: self._is_in(last_sheet, sheets)).toList()
-        if len(matching_sheets) == len(sheets) == len(last_sheets):
+        if not (len(matching_sheets) == len(sheets) == len(last_sheets)
+                and last_number_of_lines == len(self.drawing.get_lines())):
             return True
         return False
 
     def _is_in(self, sheet: Sheet, sheets: List[Sheet]):
         matching_sheet = Stream(sheets).firstMatch(lambda sheet_to_compare:
-                                                   sheet.origin.isclose(sheet_to_compare.origin, 1)
+                                                   sheet.origin.isclose(sheet_to_compare.origin, 10)
                                                     and
-                                                   sheet.opposite_corner.isclose(sheet_to_compare.opposite_corner, 1))
+                                                   sheet.opposite_corner.isclose(sheet_to_compare.opposite_corner, 10))
         if matching_sheet is not None:
             return True
         return False
