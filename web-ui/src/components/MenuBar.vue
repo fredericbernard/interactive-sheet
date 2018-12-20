@@ -3,15 +3,9 @@
   <button class="button" v-on:click="clearDrawing">
     Clear Canvas
   </button>
-  <textarea class="text-box" ref="text">
-    Text
-  </textarea>
-  <textarea class="text-box" ref="x">
-    X
-  </textarea>
-  <textarea class="text-box" ref="y">
-    Y
-  </textarea>
+  <textarea class="text-box" ref="text" v-model="text"/>
+  <input class="text-box" ref="x" v-model="x"/>
+  <input class="text-box" ref="y" v-model="y"/>
 
   <button class="button" v-on:click="postText">
       Add Text
@@ -36,7 +30,10 @@ import {
 
 export default {
   data: () => ({
-    locked: false
+    locked: false,
+    x: "4",
+    y: "100",
+    text: "Boustrophédon"
   }),
   methods: {
     clearDrawing,
@@ -45,12 +42,9 @@ export default {
     unlock,
     isLocked,
     postText() {
-      const text = this.$refs.text.value;
-      const x = parseInt(this.$refs.x.value);
-      const y = parseInt(this.$refs.y.value);
         // eslint-disable-next-line
-        console.log(text);
-        addText(text, x, y)
+        console.log(this.text);
+        addText(this.text, parseInt(this.x), parseInt(this.y))
     },
     async updateLockState() {
         this.locked = await isLocked();

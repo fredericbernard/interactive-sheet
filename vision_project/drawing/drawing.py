@@ -39,3 +39,4 @@ class Drawing(object):
     def clear(self):
         with self._lock:
             self.lines = []
+            self.texts = []
