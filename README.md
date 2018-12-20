@@ -6,7 +6,7 @@ The user draws by moving their finger over the lit region. A web UI allows remot
 
 ## Dependencies
 * OpenCV (Computer vision algorithms)
-* Jivago (Backend application)
+* [Jivago](https://docs.jivago.io) (Backend application)
 * VueJS (Frontend application)
 
 
