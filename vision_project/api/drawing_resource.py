@@ -41,6 +41,11 @@ class DrawingResource(object):
         return "OK"
 
     @OPTIONS
+    @Path("/text")
+    def preflightAgain(self):
+        return self.preflight()
+
+    @OPTIONS
     def preflight(self):
         headers = Headers()
         headers['Access-Control-Allow-Methods'] = "POST, GET, OPTIONS, DELETE"

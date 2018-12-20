@@ -7,8 +7,7 @@
 <script>
 import {
   getDrawing,
-  addLine,
-  addText
+  addLine
 } from '@/api';
 
 export default {
@@ -63,6 +62,7 @@ export default {
 
       addLine(Math.round(this.lineStart[0]), Math.round(this.lineStart[1]), Math.round(x / this.scalingFactor), Math.round(y / this.scalingFactor));
       this.lineStart = undefined;
+
       console.log("up");
     },
     async update() {
