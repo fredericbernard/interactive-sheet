@@ -38,7 +38,7 @@ class FingerDrawingWorker(Runnable):
                 if finger:
                     sheets = self.sheet_detector.find_sheets(image)
                     current_position = self._get_relative_world_coordinate_of_finger(finger, sheets)
-                    if self._should_draw_line(current_position):
+                    if self._should_draw_line(current_position) and not self.drawing.locked:
                         self.drawing.draw_line(self.last_position, current_position)
                     self._update_last_position(current_position)
                 else:

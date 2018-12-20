@@ -4,17 +4,39 @@
     Clear Canvas
   </button>
 
-  <button class="button">
-  Clear Canvas
+  <button class="button is-info" v-on:click="lock" v-if="!locked">
+Lock
+</button>
+  <button class="button is-danger" v-on:click="unlock" v-if="locked">
+Unlock
 </button>
 </div>
 </template>
 
 <script>
-import {clearDrawing} from '@/api';
+import {
+  clearDrawing,
+  lock,
+  unlock,
+  isLocked
+} from '@/api';
 
 export default {
-methods: {clearDrawing}
+  data: () => ({
+    locked: false
+  }),
+  methods: {
+    clearDrawing,
+    lock,
+    unlock,
+    isLocked,
+    async updateLockState() {
+      this.locked = await isLocked();
+    }
+  },
+  mounted() {
+    setInterval(this.updateLockState, 1000);
+  }
 }
 </script>
 
