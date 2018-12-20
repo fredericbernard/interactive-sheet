@@ -55,5 +55,5 @@ def load_camera_settings(camera_file: str):
     settings_file = os.path.join(os.path.dirname(config.__file__), "cameraSettings.txt")
     try:
         subprocess.call(["uvcdynctrl", "-L", settings_file, "-d", camera_file])
-    except:
+    except Exception as e:
         pass

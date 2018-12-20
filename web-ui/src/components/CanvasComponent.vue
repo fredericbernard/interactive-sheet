@@ -7,7 +7,8 @@
 <script>
 import {
   getDrawing,
-  addLine
+  addLine,
+  addText
 } from '@/api';
 
 export default {

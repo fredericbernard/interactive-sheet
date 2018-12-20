@@ -22,3 +22,16 @@ export function addLine(start_x, start_y, end_x, end_y) {
     })
   });
 }
+
+export function addText(text, center_x, center_y) {
+    return fetch( `${serverUrl}/drawing/text`, {
+        method: 'post',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify( {
+            text: text,
+            center: [center_x, center_y]
+        })
+    });
+}

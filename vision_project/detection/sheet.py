@@ -49,3 +49,6 @@ class Sheet(object):
         rotated_coordinate = coordinate.rotate(-angle)
         return (rotated_origin.x <= rotated_coordinate.x <= rotated_opposite_corner.x) \
             and (rotated_opposite_corner.y <= rotated_coordinate.y <= rotated_origin.y)
+
+    def get_rotation(self):
+        return math.atan2(self.main_axis.y, self.main_axis.x)
