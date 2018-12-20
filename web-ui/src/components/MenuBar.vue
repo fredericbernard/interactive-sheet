@@ -6,6 +6,12 @@
   <textarea class="text-box" ref="text">
     Text
   </textarea>
+  <textarea class="text-box" ref="x">
+    X
+  </textarea>
+  <textarea class="text-box" ref="y">
+    Y
+  </textarea>
 
   <button class="button" v-on:click="postText">
       Add Text
@@ -39,10 +45,12 @@ export default {
     unlock,
     isLocked,
     postText() {
-        const text = this.$refs.text.value;
+      const text = this.$refs.text.value;
+      const x = this.$refs.x.value;
+      const y = this.$refs.y.value;
         // eslint-disable-next-line
         console.log(text);
-        addText(text, 10, 10)
+        addText(text, x, y)
     },
     async updateLockState() {
         this.locked = await isLocked();
