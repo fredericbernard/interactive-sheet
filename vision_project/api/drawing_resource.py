@@ -1,6 +1,6 @@
-from jivago.lang.annotations import Inject, Serializable
+from jivago.lang.annotations import Inject
 from jivago.wsgi.annotations import Resource, Path
-from jivago.wsgi.methods import GET, DELETE, POST, OPTIONS
+from jivago.wsgi.methods import GET, POST, OPTIONS
 from jivago.wsgi.request.headers import Headers
 from jivago.wsgi.request.response import Response
 
