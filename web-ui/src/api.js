@@ -35,3 +35,16 @@ export function addText(text, center_x, center_y) {
         })
     });
 }
+
+export function lock() {
+  return fetch(`${serverUrl}/drawing/lock`, {method: 'post'})
+}
+
+
+export function unlock() {
+  return fetch(`${serverUrl}/drawing/unlock`, {method: 'post'})
+}
+
+export function isLocked() {
+  return fetch(`${serverUrl}/drawing/lock`).then(res => res.json()).then(res => res.locked);
+}

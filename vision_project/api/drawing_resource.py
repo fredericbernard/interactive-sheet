@@ -51,3 +51,30 @@ class DrawingResource(object):
         headers['Access-Control-Allow-Methods'] = "POST, GET, OPTIONS, DELETE"
         headers['Access-Control-Allow-Headers'] = '*'
         return Response(200, headers, "")
+
+    @POST
+    @Path("/lock")
+    def lock(self) -> str:
+        self.drawing.lock()
+        return ""
+
+    @POST
+    @Path("/unlock")
+    def unlock(self) -> str:
+        self.drawing.unlock()
+        return ""
+
+    @OPTIONS
+    @Path("/lock")
+    def lock_preflight(self) -> Response:
+        return self.preflight()
+
+    @OPTIONS
+    @Path("/unlock")
+    def unlock_preflight(self) -> Response:
+        return self.preflight()
+
+    @GET
+    @Path("/lock")
+    def is_locked(self) -> dict:
+        return {"locked": self.drawing.locked}

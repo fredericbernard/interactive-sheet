@@ -10,22 +10,47 @@
   <button class="button" v-on:click="postText">
       Add Text
   </button>
+    <button class="button is-info" v-on:click="lock" v-if="!locked">
+Lock
+</button>
+  <button class="button is-danger" v-on:click="unlock" v-if="locked">
+Unlock
+</button>
 </div>
 </template>
 
 <script>
-import {clearDrawing, addText} from '@/api';
+import {
+  clearDrawing,
+  lock,
+  unlock,
+  isLocked,
+  addText
+} from '@/api';
 
 export default {
-methods: {
-  clearDrawing,
-  addText,
-  postText() {
-    const text = this.$refs.text.value;
-    // eslint-disable-next-line
-    console.log(text);
-    addText(text, 10, 10)
-  }}
+  data: () => ({
+    locked: false
+  }),
+  methods: {
+    clearDrawing,
+    addText,
+    lock,
+    unlock,
+    isLocked,
+    postText() {
+        const text = this.$refs.text.value;
+        // eslint-disable-next-line
+        console.log(text);
+        addText(text, 10, 10)
+    },
+    async updateLockState() {
+        this.locked = await isLocked();
+    }
+  },
+  mounted() {
+    setInterval(this.updateLockState, 1000);
+  }
 }
 </script>
 
