@@ -31,4 +31,4 @@ class CameraCaptureContext(DebugJivagoContext):
 app = JivagoApplication(vision_project, context=CameraCaptureContext)
 
 if __name__ == "__main__":
-    app.run_dev()
+    app.run_dev(host="0.0.0.0")
