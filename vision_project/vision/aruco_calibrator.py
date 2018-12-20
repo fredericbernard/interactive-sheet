@@ -6,6 +6,7 @@ import PIL
 import cv2
 import yaml
 import numpy as np
+from jivago.lang.stream import Stream
 
 from numpy.linalg import inv
 from PIL import ImageTk
@@ -15,7 +16,9 @@ from jivago.lang.annotations import Inject
 import infra
 import vision_project
 from vision_project.projection.projector_window import ProjectorWindow
+from vision_project.vision.coordinate_converter import CalibratedCoordinateTranslator
 from vision_project.vision.image_repository import ImageRepository, LiveCapture
+from vision_project.vision.util import PixelCoordinate
 
 
 class ArucoCalibrator(object):
@@ -98,4 +101,8 @@ if __name__ == '__main__':
         return canvas.create_oval(x - rad, y - rad, x + rad, y + rad, width=0, fill='blue')
 
 
-    draw_circle(window.canvas, 850, 750, 10)
+    converter = CalibratedCoordinateTranslator()
+    Stream(corners_projector[0][0]).map(lambda x, y: PixelCoordinate(x, y)).map(lambda x: converter.to_projector(x)).forEach(
+        lambda p: draw_circle(window.canvas, p.x, p.y, 10))
+
+    # draw_circle(window.canvas, 850, 750, 10)

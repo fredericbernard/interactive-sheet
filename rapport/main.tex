@@ -1,5 +1,4 @@
 \documentclass[11pt]{report}
-\usepackage{outline}
 \usepackage{pmgraph}
 \usepackage{url}
 \usepackage[normalem]{ulem}
@@ -20,6 +19,7 @@
 \setlength{\parindent}{1cm}
 \usepackage{graphicx}
 \graphicspath{ {assets/} }
+\setcounter{section}{1}
 
 \begin{document}
 %--------------------Title Page
@@ -28,12 +28,12 @@
 
 \newpage
 
-\section{Solution proposée}
+\chapter{Solution proposée}
 La solution proposée est constituée d'un projecteur et d'une caméra. Le
 projecteur est disposé de manière à illuminer une table, et la caméra sert à
 détecter la position de feuilles blanches et d'un doigt.
 
-\subsection{Fonctionnement général}
+\section{Fonctionnement général}
 Le système permet à un utilisateur, en utilisant son doigt, de dessiner sur une
 feuille en temps réel. En localisant la position du doigt et de la feuille
 blanche sur la table, le système superpose le tracé effectué par l'utilisateur
@@ -53,17 +53,17 @@ résultat serait automatiquement reflété sur les feuilles des autres
 participants. De plus, des participants présents à distance pourraient effectuer
 le même exercice en se connectant à l'application web. 
 
-\subsection{Description de la méthode employée}
+\section{Description de la méthode employée}
 Cette section décrit les aspects techniques nécessaires à la réalisation du
 projet. L'application des algorithmes de vision artificielle est faite à l'aide
 de la bibliothèque \textit{OpenCV}, l'affichage graphique pour le projecteur est
 faite au moyen du module \textit{Python} \textit{Tkinter}, l'application web est
 faite avec \textit{VueJS} et la gestion du serveur et du flot d'exécution est
-faite par le \textit{framework} \textit{Jivago}. 
+faite par le framework \textit{Jivago}. 
 
-\subsubsection{Détection de la feuille blanche}
+\subsection{Détection de la feuille blanche}
 La figure \ref{feuille_blanche} montre une vue qu'aurait la caméra du la surface
-de travail. Les paramètres de saisie de la caméra ont été choisis de sorte à
+de travail. Les paramètres de saisie de la caméra ont été choisis de manière à
 faire ressortir la surface blanche sous l'éclairage dominant du projecteur. Par
 la suite, un seuillage sur les valeurs d'illuminance est effectué, de sorte à ne
 conserver que les pixels dont la « valeur » dans le repère HSV est supérieure à
@@ -88,7 +88,7 @@ Un exemple de détection est présenté à la figure \ref{detection_feuille}.
   \label{detection_feuille}
 \end{figure}
 
-\subsubsection{Détection du doigt}
+\subsection{Détection du doigt}
 Similairement, la détection du doigt s'effectue par un seuillage appliqué sur la
 valeur HSV des pixels. Pour le moment, un seuil est prédéfini de manière à
 reconnaître la main de l'un des présentateurs. La position du doigt elle-même
@@ -106,7 +106,7 @@ pixels représentant le bras de l'expérimentateur. La figure
 \end{figure}
 
 
-\subsubsection{Homographie entre l'image projetée et l'image capturée par la
+\subsection{Homographie entre l'image projetée et l'image capturée par la
   caméra}
 La calibration initiale de la caméra est effectuée au moyen d'un damier. De
 cette manière, nous sommes en mesure d'annuler les effets de la distorsion sur
@@ -115,13 +115,19 @@ les images captées.
 Afin d'effectuer la conversion des coordonnées entre les repères de la caméra et
 du projecteur, l'appariement initial des points pour le calcul de l'homographie
 est effectué au moyen d'un marqueur \textit{ArUco}. Avant de débuter la
-démonstration, le script de calibration est lancé, et projette un marqueur.
+démonstration, le script de calibration est lancé, et projette un marqueur
+(figure \ref{calibration_aruco}).
 L'appariement des quatre coins est effectué en utilisant les algorithmes de
 détection d'\textit{ArUco} disponibles dans \textit{OpenCV}. 
 
-% TODO : image processus de calibrataion
+\begin{figure}[h]
+  \centering
+  \includegraphics[width=8cm]{calibration.png}
+  \caption{Processus de calibration en utilisant un marqueur \textit{ArUco}.}
+  \label{calibration_aruco}
+  \end{figure}
 
-\subsubsection{Logique de gestion de dessin}
+\subsection{Logique de gestion de dessin}
 
 Le dessin à afficher est sauvegardé de manière vectorielle. Chaque ligne est
 enregistrée individuellement, et les distances sont encodées en millimètres, et
@@ -132,7 +138,7 @@ dans le cas où la feuille est placée plus ou moins loin du projecteur.
 Un \textit{thread} en arrière plan se charge de maintenir à jour le canevas qui
 est projeté, de sorte que l'affiche s'effectue en temps réel. 
 
-\subsubsection{Application web de visualisation et d'administration}
+\subsection{Application web de visualisation et d'administration}
 
 Enfin, plusieurs routes d'API REST sont exposées au moyen d'une application
 \textit{Jivago}, ce qui permet à une application web de visualiser en direct le
@@ -146,7 +152,7 @@ seconde pour l'afficher (figure \ref{web_ui}).
   \label{web_ui}
   \end{figure}
 
-\section{Performances}
+\chapter{Performances}
 La plus grande force de notre système est que le traitement s'effectue en temps
 réel. En effet, la détection des feuilles blanches et du doigt sont relativement
 peu complexes, et nous permettre de mettre à jour en temps réel l'affichage pour
@@ -171,7 +177,7 @@ chaque démonstration et que le montage est fixe, il n'y a pas de réelle perte 
 précision durant cet intervalle de temps.
 
 
-\section{Améliorations possibles}
+\chapter{Améliorations possibles}
 Toutefois, le système comporte aussi son lot de failles et d'améliorations
 potentielles. Par exemple, malgré que le système soit utilisable en « temps
 réel », il existe une latence entre le moment où l'action est effectuée et
@@ -213,8 +219,8 @@ plusieurs desquelles sont incluses dans \textit{OpenCV}. Par exemple, la
 librairie propose des approches par MoG (\textit{Mixture of Gaussian}) pour
 effectuer la segmentation de
 l'arrière-plan\footnote{\url{https://docs.opencv.org/3.1.0/d1/dc5/tutorial_background_subtraction.html}}.
-Dans ce cas, une difficulté dont il font tenir compte est que les feuilles
-peuvent se déplacer dans la scène, ce qui pourrait les identifier, de manière
+Dans ce cas, une difficulté dont il faut tenir compte est que les feuilles
+peuvent se déplacer dans la scène, ce qui pourrait les marquer, de manière
 erronée, comme faisant partie de l'avant-plan. 
 
 Finalement, la détection du doigt, dans son implantation actuelle, ne tient pas
