@@ -46,8 +46,8 @@ export default {
     isLocked,
     postText() {
       const text = this.$refs.text.value;
-      const x = this.$refs.x.value;
-      const y = this.$refs.y.value;
+      const x = parseInt(this.$refs.x.value);
+      const y = parseInt(this.$refs.y.value);
         // eslint-disable-next-line
         console.log(text);
         addText(text, x, y)
