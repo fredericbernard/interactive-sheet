@@ -11,7 +11,7 @@ The user draws by moving their finger over the lit region. A web UI allows remot
 
 
 ## Demo
-
+[![Demo on YouTube](https://img.youtube.com/vi/QpyrJIZgLoc/0.jpg)](https://www.youtube.com/watch?v=QpyrJIZgLoc)
 
 ## Lab Report
 [Lab Report](rapport/main.pdf) [French]
